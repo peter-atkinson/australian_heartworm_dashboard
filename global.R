@@ -1,0 +1,43 @@
+library(shiny); library(lubridate); library(DT); library(ggplot2); library(sf);
+library(sp); library(cropgrowdays); library(RColorBrewer); library(dplyr); library(scales);
+library(maptools); library(raster); library(sf); library(sp); library(rgeos); library(rgdal); library(devtools)
+library(terra); library(rasterVis); library(tmap); library(tmaptools)
+library(plyr); library(busdater); library(stringr); library(dplyr); library(leaflet)
+
+
+dseq <- seq(from = as.Date("01-01-2015", format = "%d-%m-%Y"), to = as.Date(Sys.Date()-2, format = "%d-%m-%Y"), by = 1)
+
+#
+
+yseq.df <- count(data.frame(dseq, year = strftime(dseq, "%Y")), "year")
+
+#
+
+list <- readRDS("list")
+
+poa20152022max <- readRDS("newpoa20152022max.RDS")
+poa2023max <- readRDS("poa2023max.RDS")
+
+postcodes.all <- bind_rows(poa20152022max, poa2023max)
+
+rownames(postcodes.all) <- dseq
+
+#currentmax.df <- readRDS("currentmax.RDS")
+currentmax.df <- postcodes.all[nrow(postcodes.all),]
+
+#postcodes.all <- data.frame(dseq, readRDS("poa20152021max.RDS"))
+
+#column no. of capital cities
+capital.codes <- c(35, 466, 671, 1365, 1798, 2139, 2523, 1)
+capital.names <- c("Sydney", "Canberra", "Melbourne", "Brisbane", "Adelaide", "Perth", "Hobart", "Darwin")
+
+capital.chdu <- currentmax.df[,((capital.codes))]
+preventatives <- c(0)
+for (i in 1:8){
+  capital.chdu[2,i] <- if_else(capital.chdu[1,i] >= 130, 'On', 'Off')
+  preventatives[i] <- if_else(capital.chdu[2,i]=="On", "Preventatives required", "Preventatives not necessary")
+  
+}
+capital.chdu <- rbind(capital.names, capital.chdu[2,], preventatives)
+capital.df <- as.data.frame(t(capital.chdu))
+colnames(capital.df) <- c("Capital city", (paste(max(dseq), "'s", " status", sep="")), "")

@@ -1,0 +1,12 @@
+#Script for all packages to reinstall if needed
+
+packages <- c("dplyr", "readr", "purrr", "stringr", "tibble", "magick", "aws.s3",
+              "ncdf4", "rgdal", "ggplot2", "raster", "rasterVis", "maptools", "maps", "tidync",
+              "sf", "sp", "rgeos", "devtools", "viridis", "wesanderson", "devtools", "cropgrowdays", "PROJ", "shiny")
+
+
+install.packages(packages, dependencies = TRUE)
+
+install.packages("terra")
+
+devtools::install_github("becarioprecario/spatialkernel")
