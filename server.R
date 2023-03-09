@@ -166,6 +166,7 @@ function(input,output,session){
       status.df[n,4] <- ifelse(status.df[(n+1),2] < 130 & status.df[n,2]>130, 1, 0)}
     
     a <- which(status.df[,4]==1)
+    validate(need(length(a) > 0, message=paste("If this message is being shown, it indicates all days of every year have either had HDU>130, or HDU<130")))
     
     cutoffdata <- data.frame(status.df[a,1], "season stops")
     
@@ -227,7 +228,7 @@ function(input,output,session){
     }
     
     a <- which(perc.df[,4]==1)
-    validate(need(length(a) > 0, message=paste("not working!")))
+    validate(need(length(a) > 0, message=paste("If this message is being shown, it indicates all days of every year have either had HDU>130, or HDU<130")))
     
     percdata <- data.frame(perc.df[a,1], "season stops")
     perc.df[,5] <- NA
