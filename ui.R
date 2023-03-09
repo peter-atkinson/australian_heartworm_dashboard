@@ -15,7 +15,7 @@ fluidPage(titlePanel("Australian heartworm transmission - University of Adelaide
               column(12,
                      wellPanel((h3("Location")),
                                #if slow loading times, consider making this in server
-                               selectizeInput("postcode", "Enter your postcode:", choices=list, selected="2601"),
+                               selectizeInput("postcode", "Enter your postcode:", choices=poa.list, selected="2601"),
                                textOutput("postcode")),
                      div(class = "output-container",
                          plotOutput("locationplot")

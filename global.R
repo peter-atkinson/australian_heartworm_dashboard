@@ -13,7 +13,7 @@ yseq.df <- count(data.frame(dseq, year = strftime(dseq, "%Y")), "year")
 
 #
 
-list <- readRDS("list")
+poa.list <- readRDS("poa.list")
 
 poa20152022max <- readRDS("newpoa20152022max.RDS")
 poa2023max <- readRDS("poa2023max.RDS")

@@ -54,7 +54,7 @@ function(input,output,session){
   locationplotdata <- reactive({
     req(input$postcode != "")
     postcode <- input$postcode
-    z <- which(list==postcode)
+    z <- which(poa.list==postcode)
     
     trial <- data.frame(dseq, {if(length(all_of(z))!=0) dplyr::select(postcodes.all, (all_of(z)))
       else return(NULL)})
@@ -134,7 +134,7 @@ function(input,output,session){
   statusdata <- reactive({
     req(input$postcode != "")
     postcode <- input$postcode
-    z <- which(list==postcode)
+    z <- which(poa.list==postcode)
     
     todaystatus.df <- data.frame(dseq, {if(length(all_of(z))!=0) dplyr::select(postcodes.all, (all_of(z)))
       else return(NULL)})
@@ -154,7 +154,7 @@ function(input,output,session){
   cutoffdata <- reactive({
     req(input$postcode != "")
     postcode <- input$postcode
-    z <- which(list==postcode)
+    z <- which(poa.list==postcode)
     
     status.df <- data.frame(dseq, {if(length(all_of(z))!=0) dplyr::select(postcodes.all, (all_of(z)))
       else return(NULL)})
@@ -213,7 +213,7 @@ function(input,output,session){
   percentagetabledata <- reactive({
     req(input$postcode != "")
     postcode <- input$postcode
-    z <- which(list==postcode)
+    z <- which(poa.list==postcode)
     
     perc.df <- data.frame(dseq, {if(length(all_of(z))!=0) dplyr::select(postcodes.all, (all_of(z)))
       else return(NULL)})
