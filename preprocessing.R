@@ -122,10 +122,6 @@ for(i in i:i){
   # Sum all the values in the raster stack:
   tchdu.r <- app(tchdu.r, fun=sum)
   
-  # Plot to check, using 130HDU as the cut-off level:
-  #plot(tchdu.r)
-  #contour(tchdu.r, levels = 130, lty = 1, add = TRUE, lwd=1.5, col="purple")
-
   # Write the summed raster (i.e. the CHDU file) out as a GTiff:
   writeRaster(tchdu.r, filename =  paste("C:/Users/a1667856/Box/PhD/HDU Mapping/hdu_mapping/hdumaps/", chdu.pname[i], sep=""), overwrite = TRUE)
   cat(i, "\n"); flush.console()   

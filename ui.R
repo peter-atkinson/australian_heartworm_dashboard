@@ -1,4 +1,4 @@
-fluidPage(titlePanel("Australian heartworm transmission - University of Adelaide"),
+fluidPage(titlePanel("Australian heartworm transmission"),
           tags$head(
             tags$link(rel ="stylesheet", type = "text/css", href = "main.css")
           ),
