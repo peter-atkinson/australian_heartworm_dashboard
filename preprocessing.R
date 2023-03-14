@@ -7,14 +7,14 @@ save_object(
   object = "Official/annual/max_temp/2023.max_temp.nc",
   bucket = "s3://silo-open-data/Official/daily/max_temp/", 
   region = "ap-southeast-2",
-  file = "2023.max.nc"
+  file = "data/2023.max.nc"
 )
 
 save_object(
   object = "Official/annual/min_temp/2023.min_temp.nc",
   bucket = "s3://silo-open-data/Official/daily/min_temp/", 
   region = "ap-southeast-2",
-  file = "2023.min.nc"
+  file = "data/2023.min.nc"
 )
 
 
@@ -27,8 +27,8 @@ library(raster)
 auadm0ll.sf <- st_read(dsn="C:/Users/a1667856/Box/PhD/HDU Mapping/hdu_mapping/maps", layer="AU_adm0_gen-LL")
 auadm0ll.bb <- st_bbox(auadm0ll.sf)
 
-fn <- "2023.min.nc"
-fx <- "2023.max.nc"
+fn <- "data/2023.min.nc"
+fx <- "data/2023.max.nc"
 
 dseq <- seq(from = as.Date("01-01-2023", format = "%d-%m-%Y"), to = as.Date((Sys.Date()-2), format = "%d-%m-%Y"), by = 1)
 
@@ -155,7 +155,7 @@ obname <- data.frame(idx = 1:length(list), poa = auspoa.sf$POA_NAME21)
 dseq.df <- data.frame(idx = 1:length(dseq), dseq=dseq)
 
 #read in the existing dataframes
-poa2023max <- readRDS("poa2023max.RDS")
+poa2023max <- readRDS("data/poa2023max.RDS")
 #y <- nrow(poa20152022max)+1
 
 i <- which(dseq==(Sys.Date())-2)

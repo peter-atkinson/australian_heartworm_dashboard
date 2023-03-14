@@ -1,19 +1,101 @@
 function(input,output,session){
   
+  firstLoad <- reactiveVal(TRUE)
+  
+  #create ui output main_paload a reactive UI depending on conditions
+  output$main_page <- renderUI({
+    if(firstLoad()) {
+      uiOutput("disclaimer")
+    }
+    else {
+      uiOutput("standard")
+    }
+    
+  })
+  
+  #create each UI
+  output$disclaimer <- renderUI({
+    wellPanel(
+      div(style = "text-align: center;",
+          h4(HTML("If this is your first time visiting, please read <b>'About'</b> before proceeding.
+                            If you have visited before, thanks for returning!"))),
+      br(),
+      br(),
+      div(style = "text-align: center;", 
+          actionButton("action_ID", h4(HTML("Continue to <b> Australian heartworm transmission dashboard </b>")),
+                       width="100%"))
+    )
+  })
+  
+  output$standard <- renderUI({
+    tagList(
+      fluidRow(column(12, style = "margin-bottom: 5px;",
+                      wellPanel(style = "text-align: center;",
+                                h4(HTML("If this is your first time visiting, please read <b>'About'</b> before proceeding.
+                            If you have visited before, thanks for returning!"))))),
+      fluidRow(
+        column(9, style = "margin-bottom: 50px;",
+               wellPanel(h3(textOutput("selecteddatemap"),
+                            br(),
+                            dateInput("dates", label=NULL, value = (Sys.Date()-2), min = min(dseq), max = max(dseq)),
+                            leafletOutput("leaflet_chdu", height=600, width="100%")))),
+        column(3,
+               wellPanel(h4(strong('What is happening in the capital cities?')), tableOutput("capital.cities")))),
+      fluidRow(
+        column(12,
+               wellPanel((h3("Location")),
+                         #if slow loading times, consider making this in server
+                         selectizeInput("postcode", "Enter your postcode:", choices=poa.list, selected="5371"),
+                         textOutput("postcode")),
+               div(class = "output-container",
+                   plotOutput("locationplot")
+               )
+        )
+      ),
+      fluidRow(
+        column(6,
+               wellPanel(p(strong(paste(as.Date((Sys.Date()-2), format = "%d-%m-%Y"), "'s", " status:", sep="")),
+                           textOutput(("dailystatus")))),
+               wellPanel(dataTableOutput("cutofftable"))
+        ),
+        column(6,
+               wellPanel(dataTableOutput("percentagetable")))),
+      fluidRow(column(12,
+                      wellPanel(column(3,
+                                       br(),
+                                       br(),
+                                       radioButtons(inputId = "summaryselection",
+                                                    label=h4(strong("10 year summary of transmission zones")),
+                                                    #choices=c("1970-1979", "1980-1989", "1990-1999", "2000-2009", "2010-2019"),
+                                                    choiceNames = c("1970-1979", "1980-1989", "1990-1999", "2000-2009", "2010-2019", "summary GIF", "51-year summary"),
+                                                    choiceValues = c("1.7079sum.png", "2.8089sum.png", "3.9099sum.png", "4.0009sum.png", "5.1019sum.png", "summary.gif", "51yearsumm.png"),
+                                                    selected=NULL)),
+                                column(9,
+                                       br(),
+                                       br(),
+                                       wellPanel(imageOutput("summaryImage", height="auto", width="75%"))))))
+    )
+  })
+  
+  observeEvent(
+    input$action_ID,
+    {if(firstLoad()) {firstLoad(FALSE)} })
+  
+  #create server objects - graphs etc
   output$selecteddatemap <- renderText({
     (paste("As of", format(input$dates, format = "%d %b %Y"), 
-          ", where can heartworm be transmitted?"))
+           ", where can heartworm be transmitted?"))
   })
   
   output$leaflet_chdu <- renderLeaflet({
     chdu <- paste("C:/Users/a1667856/Box/PhD/HDU Mapping/hdu_mapping/hdumaps/",
                   "chdu", format(input$dates, format = "%Y%m%d"),
                   ".tif", sep="")
-
+    
     chdu.r <- raster(chdu)
-
+    
     values <- getValues(chdu.r)
-
+    
     pal <- colorBin(c("royalblue3", "goldenrod2", "firebrick3"), bins=c(0, 120, 130, Inf),
                     na.color = "transparent")
     
@@ -39,7 +121,7 @@ function(input,output,session){
     
   }, deleteFile = FALSE)
   
-
+  
   
   output$location <- renderText({
     paste("Your postcode:", input$postcode)
@@ -47,7 +129,7 @@ function(input,output,session){
   
   output$capital.cities <- renderTable({
     capital.df
-    })
+  })
   
   output$locationplot <- renderPlot(locationplotdata())
   
@@ -147,7 +229,7 @@ function(input,output,session){
     t <- as.character(t)
     t
     
-   })
+  })
   
   output$cutofftable <- renderDataTable(cutoffdata())
   
@@ -161,12 +243,12 @@ function(input,output,session){
     
     status.df[,3] <- ifelse(status.df[,2] > 130, 1, 0)
     status.df[,4] <- NA
-   
+    
     for (n in 1:nrow(status.df)){
       status.df[n,4] <- ifelse(status.df[(n+1),2] < 130 & status.df[n,2]>130, 1, 0)}
     
     a <- which(status.df[,4]==1)
-    validate(need(length(a) > 0, message=paste("If this message is being shown, it indicates all days of every year have either had HDU>130, or HDU<130")))
+    validate(need(length(a) > 0, message=paste("If this message is being shown, there are no cutoff dates. All dates of each year since 2015 have the same status")))
     
     cutoffdata <- data.frame(status.df[a,1], "season stops")
     
@@ -210,7 +292,7 @@ function(input,output,session){
   outputOptions(output, 'cutofftable', suspendWhenHidden=TRUE)
   
   output$percentagetable <- renderDataTable(percentagetabledata())
-    
+  
   percentagetabledata <- reactive({
     req(input$postcode != "")
     postcode <- input$postcode
@@ -228,7 +310,7 @@ function(input,output,session){
     }
     
     a <- which(perc.df[,4]==1)
-    validate(need(length(a) > 0, message=paste("If this message is being shown, it indicates all days of every year have either had HDU>130, or HDU<130")))
+    validate(need(length(a) > 0, message=paste("If this message is being shown, it indicates 100% of each year has the same status")))
     
     percdata <- data.frame(perc.df[a,1], "season stops")
     perc.df[,5] <- NA
@@ -254,26 +336,26 @@ function(input,output,session){
     }
     
     df2[,3] <- c(NA)
-
-    percentagetabledata <- data.frame(yseq.df[,1], NA)
-      for (i in 1:length(yseq.df[,1])){
-        
-        tdf <- subset(df1, format(as.Date(df1[,1]), "%Y")==yseq.df[i,1])
-        percentagetabledata[i,2] <- (yseq.df[i,2] - sum(tdf[,3]))/yseq.df[i,2] * 100
-
-      }
     
-   percentagetabledata[,2] <- as.numeric(percentagetabledata[,2])
-   percentagetabledata[,2] <- round(percentagetabledata[,2], digits=2)
-   
-   percentagetabledata[nrow(percentagetabledata),2] <- ifelse(yseq.df[nrow(yseq.df),2] >= 365, percentagetabledata[nrow(percentagetabledata),2], NA)
-   
+    percentagetabledata <- data.frame(yseq.df[,1], NA)
+    for (i in 1:length(yseq.df[,1])){
+      
+      tdf <- subset(df1, format(as.Date(df1[,1]), "%Y")==yseq.df[i,1])
+      percentagetabledata[i,2] <- (yseq.df[i,2] - sum(tdf[,3]))/yseq.df[i,2] * 100
+      
+    }
+    
+    percentagetabledata[,2] <- as.numeric(percentagetabledata[,2])
+    percentagetabledata[,2] <- round(percentagetabledata[,2], digits=2)
+    
+    percentagetabledata[nrow(percentagetabledata),2] <- ifelse(yseq.df[nrow(yseq.df),2] >= 365, percentagetabledata[nrow(percentagetabledata),2], NA)
+    
     colnames(percentagetabledata) <- c("Year", "Percentage of the year at risk")
     percentagetabledata
     
   })
-    outputOptions(output, 'percentagetable', suspendWhenHidden=TRUE)
-    
+  outputOptions(output, 'percentagetable', suspendWhenHidden=TRUE)
+  
 }
 
 

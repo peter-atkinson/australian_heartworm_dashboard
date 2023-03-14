@@ -13,16 +13,16 @@ yseq.df <- count(data.frame(dseq, year = strftime(dseq, "%Y")), "year")
 
 #
 
-poa.list <- readRDS("poa.list")
+poa.list <- readRDS("data/poa.list")
 
-poa20152022max <- readRDS("newpoa20152022max.RDS")
-poa2023max <- readRDS("poa2023max.RDS")
+poa20152022max <- readRDS("data/newpoa20152022max.RDS")
+poa2023max <- readRDS("data/poa2023max.RDS")
 
 postcodes.all <- bind_rows(poa20152022max, poa2023max)
 
 rownames(postcodes.all) <- dseq
 
-#currentmax.df <- readRDS("currentmax.RDS")
+#currentmax.df <- readRDS("data/currentmax.RDS")
 currentmax.df <- postcodes.all[nrow(postcodes.all),]
 
 #postcodes.all <- data.frame(dseq, readRDS("poa20152021max.RDS"))
