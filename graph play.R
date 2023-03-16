@@ -398,3 +398,59 @@ leaflet(data = chdu.r, options = leafletOptions(zoomControl=FALSE)) %>%
             labels = c("Transmission not possible" = "royalblue3", "Transmission unlikely" = "goldenrod2", "Transmission possible" = "firebrick3"),
             title = "cHDU")
 
+
+#_______________________________________________________________
+
+
+dseq <- seq(from = as.Date("01-01-2023", format = "%d-%m-%Y"), to = as.Date((Sys.Date()-2), format = "%d-%m-%Y"), by = 1)
+
+poa2023max.t <- poa2023max
+
+poa2023max.t <- poa2023max.t[1:72,]
+
+x <- length(dseq) - nrow(poa2023max.t)-1
+
+i <- which(dseq==(Sys.Date())-2)
+
+for(i in (i-x):i){
+  # for(i in 1:length(dseq)){
+  #create individual raster brick for t min
+  trasbrick <- brick(fn)
+  #subset only 1 date - date is i to i
+  tmin.r <- subset(trasbrick, i:i)
+  #plot(tmin.r)
+  
+  #repeat for t max
+  trasbrick <- brick(fx)
+  tmax.r <- subset(trasbrick, i:i)
+  #plot(tmax.r)
+  
+  Tavg <- (tmax.r+tmin.r)/2
+  base <- 14
+  W <- (tmax.r-tmin.r)/2
+  Q <- (base-Tavg)/W
+  
+  #transform >1 into 1, <-1 into -1
+  
+  Q[Q < -1] <- -1
+  Q[Q > 1] <- 1
+  
+  A <- asin(Q)
+  
+  #calculate the HDU per day
+  thdu.r <- ((W*cos(A))-((base-Tavg)*((pi/2)-A)))/pi
+  plot(thdu.r)
+  
+  # If HDU is less than zero, assign a value of zero:
+  #thdu.r[thdu.r < 0] <- 0
+  
+  # filename <- paste("C:/Users/a1667856/Box/PhD/HDU Mapping/hdu_mapping/hdumaps", hdu.pname[i], sep="")
+  
+  # Write the HDU raster out as a GTiff file:
+  #writeRaster(thdu.r, filename =  paste("C:/Users/a1667856/Box/PhD/HDU Mapping/hdu_mapping/hdumaps/", hdu.pname[i], sep=""), format="GTiff", overwrite=TRUE)
+  
+  #writeRaster(thdu.r, file.path("C:/Users/a1667856/Box/PhD/HDU Mapping/hdu_mapping/hdumaps", hdu.pname[i]), overwrite=TRUE)
+  cat(i, "\n"); flush.console()
+}
+
+

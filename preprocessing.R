@@ -35,9 +35,10 @@ dseq <- seq(from = as.Date("01-01-2023", format = "%d-%m-%Y"), to = as.Date((Sys
 hdu.pname <- paste("hdu", format(dseq, format = "%Y%m%d"), ".tif", sep = "")
 
 #sine method
+x <- length(dseq) - nrow(poa2023max)-1
 i <- which(dseq==(Sys.Date())-2)
 
-for(i in i:i){
+for(i in (i-x):i){
   # for(i in 1:length(dseq)){
   #create individual raster brick for t min
   trasbrick <- brick(fn)
@@ -99,9 +100,10 @@ dcut.n <- match(dcut, levels(dcut))
 ord <- which(dcut.n == it)
 ord <- (32:length(dseq))[ord]
 
+x <- length(dseq) - nrow(obname)-1
 i <- which(dseq==(Sys.Date())-2)
 
-for(i in i:i){
+for(i in (i-x):i){
   # Select each day of interest in turn and list the HDU rasters for the previous 30 days:
   idx.start <- i - (nday - 1)
   idx.stop <- i
@@ -158,9 +160,10 @@ dseq.df <- data.frame(idx = 1:length(dseq), dseq=dseq)
 poa2023max <- readRDS("data/poa2023max.RDS")
 #y <- nrow(poa20152022max)+1
 
+x <- length(dseq) - nrow(poa2023max)-1
 i <- which(dseq==(Sys.Date())-2)
 
-for (i in i:i){
+for (i in (i-x):i){
   y <- nrow(poa2023max)+1
   traster <- rast(as.character(chdu.fname[i]))
   plot(traster)
