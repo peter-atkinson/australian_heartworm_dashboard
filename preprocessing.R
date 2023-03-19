@@ -34,6 +34,8 @@ dseq <- seq(from = as.Date("01-01-2023", format = "%d-%m-%Y"), to = as.Date((Sys
 
 hdu.pname <- paste("hdu", format(dseq, format = "%Y%m%d"), ".tif", sep = "")
 
+poa2023max <- readRDS("data/poa2023max.RDS")
+
 #sine method
 x <- length(dseq) - nrow(poa2023max)-1
 i <- which(dseq==(Sys.Date())-2)
@@ -100,7 +102,9 @@ dcut.n <- match(dcut, levels(dcut))
 ord <- which(dcut.n == it)
 ord <- (32:length(dseq))[ord]
 
-x <- length(dseq) - nrow(obname)-1
+poa20152022max <- readRDS("data/newpoa20152022max.RDS")
+
+x <- length(dseq) - (nrow(poa20152022max)+nrow(poa2023max))-1
 i <- which(dseq==(Sys.Date())-2)
 
 for(i in (i-x):i){
