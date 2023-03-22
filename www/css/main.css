@@ -1,0 +1,16 @@
+
+.output-container {
+  margin-bottom: 50px;
+  margin-top: 50px;
+}
+
+@media (min-width: 575px) and (max-width: 2000px) {
+  .navbar{
+    background-color: black !important;
+
+  .container-fluid{
+    background-color: lightgrey
+  }
+  }
+}
+

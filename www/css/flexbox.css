@@ -1,0 +1,19 @@
+/* set the height of fluidRow to 100% */
+.fluidRow {
+  height: 100%;
+}
+
+/* set the height of the child columns to 100% */
+.column {
+  height: 100%;
+}
+
+/* set the display property to flex */
+.flexbox {
+  display: flex;
+}
+
+/* set flex-grow property to 1 to allow children to stretch */
+.flex-grow {
+  flex-grow: 1;
+}

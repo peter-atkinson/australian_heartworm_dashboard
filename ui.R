@@ -1,4 +1,8 @@
-navbarPage(title = strong("Australian heartworm transmission"),
+navbarPage(
+  tags$head(
+    tags$link(rel ="stylesheet", type = "text/css", href = "css/main.css")
+  ),
+  title = strong("Australian heartworm transmission"),
            #position = "static-top",
            inverse=TRUE,
            tags$head(
