@@ -43,48 +43,6 @@ This dashboard is not designed to show exactly where transmission events may occ
     
   })
   
-  output$postcode_page <- renderUI({
-    div(fluidRow(column(
-      12,
-      wellPanel((h3("Location")),
-                selectizeInput(
-                  "postcode",
-                  "Enter your postcode:",
-                  choices = poa.list,
-                  selected = 5371,
-                  width = "100px"
-                ),
-                textOutput("postcode"),
-                div(
-                  class = "output-container",
-                  shinycssloaders::withSpinner(
-                    plotOutput("locationplot"),
-                    color = getOption("spinner.color", default = "darkgrey")
-                  )
-                )
-      )
-    )),
-    
-    fluidRow(
-      div(
-        style = "margin-left: 15px; margin-right: 15px",
-        column(6,
-               wellPanel(p(
-                 strong(paste(
-                   as.Date((Sys.Date() - 2), format = "%d-%m-%Y"), "'s", " status:", sep =
-                     ""
-                 )),
-                 textOutput(("dailystatus"))
-               )),
-               wellPanel(dataTableOutput("cutofftable"))),
-        column(6,
-               wellPanel(dataTableOutput(
-                 "percentagetable"
-               )))
-      )
-    ))
-  })
-  
   output$standard <- renderUI({
     tagList(
       tags$link(
@@ -92,6 +50,7 @@ This dashboard is not designed to show exactly where transmission events may occ
         type = "text/css",
         href = "css/main.css"
       ),
+      
       fluidRow(column(
         12, style = "margin-bottom: 5px;",
         wellPanel(style = "text-align: center;",
@@ -106,7 +65,7 @@ This dashboard is not designed to show exactly where transmission events may occ
         class = "css/flexbox",
         style = "height: 800px",
         column(9, 
-               wellPanel(style = "height: 900px",
+               wellPanel(style = "height: 800px",
                          h3(
                            textOutput("selecteddatemap"),
                            br(),
@@ -120,46 +79,71 @@ This dashboard is not designed to show exactly where transmission events may occ
                            shinycssloaders::withSpinner(
                              leafletOutput("leaflet_chdu", height = 600, width ="100%"),
                              color = getOption("spinner.color", default = "darkgrey")
-                         )),
-                         br(),
-                         wellPanel(textOutput("mapcaption"))
+                           ))
                )),
         column(3, 
-               wellPanel(style = "height: 900px",
+               wellPanel(style = "height: 800px",
                          h4(strong(
                            'What is happening in the capital cities?'
-                         )), 
-                         dataTableOutput("capital.cities"),
-                         br(),
-                         wellPanel(textOutput("tablecaption"))
+                         )), tableOutput("capital.cities")
                ))
-      )
-      )
-  })
-  
-  output$historical_page <- renderUI({
-    fluidRow(style = "margin-left: 15px; margin-right: 15px",
-             wellPanel(
-               style = "height: 1000px",
-               column(
-                 3,
-                 radioButtons(
-                   inputId = "summaryselection",
-                   label = h4(strong("10 year summary of transmission zones")),
-                   choiceNames = c("1970-1979", "1980-1989", "1990-1999", "2000-2009", "2010-2019", "summary GIF", "51-year summary"),
-                   choiceValues = c("1.7079sum.png", "2.8089sum.png", "3.9099sum.png", "4.0009sum.png", "5.1019sum.png",
-                                    "summary.gif", "51yearsumm.png"),
-                   selected = NULL
+      ),
+      fluidRow(column(
+        12,
+        wellPanel((h3("Location")),
+                  #if slow loading times, consider making this in server
+                  selectizeInput(
+                    "postcode",
+                    "Enter your postcode:",
+                    choices = poa.list,
+                    selected = "5371"
+                  ),
+                  textOutput("postcode"),
+                  div(class = "output-container",
+                      shinycssloaders::withSpinner(plotOutput("locationplot"),
+                                                   color = getOption("spinner.color", default = "darkgrey")))
+        )
+      ),
+      fluidRow(
+        div(
+          style = "margin-left: 15px; margin-right: 15px",
+          column(6,
+                 wellPanel(p(
+                   strong(paste(
+                     as.Date((Sys.Date() - 2), format = "%d-%m-%Y"), "'s", " status:", sep =
+                       ""
+                   )),
+                   textOutput(("dailystatus"))
+                 )),
+                 wellPanel(dataTableOutput("cutofftable"))),
+          column(6,
+                 wellPanel(dataTableOutput(
+                   "percentagetable"
+                 )))
+        )
+      ),
+      fluidRow(style = "margin-left: 15px; margin-right: 15px",
+               wellPanel(
+                 style = "height: 1000px",
+                 column(
+                   3,
+                   radioButtons(
+                     inputId = "summaryselection",
+                     label = h4(strong("10 year summary of transmission zones")),
+                     choiceNames = c("1970-1979", "1980-1989", "1990-1999", "2000-2009", "2010-2019", "summary GIF", "51-year summary"),
+                     choiceValues = c("1.7079sum.png", "2.8089sum.png", "3.9099sum.png", "4.0009sum.png", "5.1019sum.png",
+                                      "summary.gif", "51yearsumm.png"),
+                     selected = NULL
+                   )
+                 ),
+                 column(
+                   9,
+                   br(),
+                   br(),
+                   imageOutput("summaryImage", height = "auto", width = "75%")
                  )
-               ),
-               column(
-                 9,
-                 br(),
-                 br(),
-                 imageOutput("summaryImage", height = "auto", width = "75%")
-               )
-             ))
-    
+               )))
+    )
   })
   
   observeEvent(
@@ -168,11 +152,11 @@ This dashboard is not designed to show exactly where transmission events may occ
   
   #create server objects - graphs etc
   output$selecteddatemap <- renderText({
-    (paste0("As of ", format(input$dates, format = "%d %b %Y"), 
-           ", where can heartworm complete its extrinsic incubation period?"))
+    (paste("As of", format(input$dates, format = "%d %b %Y"), 
+           ", where can heartworm be transmitted?"))
   })
   
-    output$leaflet_chdu <- renderLeaflet({
+  output$leaflet_chdu <- renderLeaflet({
     chdu <- paste("C:/Users/a1667856/Box/PhD/HDU Mapping/hdu_mapping/hdumaps/",
                   "chdu", format(input$dates, format = "%Y%m%d"),
                   ".tif", sep="")
@@ -193,29 +177,29 @@ This dashboard is not designed to show exactly where transmission events may occ
                 title = "cHDU")
   })
   
-    output$mapcaption <- renderText({
-      "The above map of Australia shows regions where heartworm can complete its extrinsic incubation period (EIP). This is where there has been
-    sufficient heat in the environment for larvae to become infectious. Red zones are where EIP can be completed. Orange zones show areas where
-    if there is more warm weather, EIP may be able to be completed. Blue zones are areas where it has been too cold for EIP to complete, so 
-    transmission of heartworm is not possible."
-    })
+  
+  output$summaryImage <- renderImage({
     
-    output$tablecaption <- renderText({
-      "The above table displays the most recent data for each capital city of Australia. It shows whether heartworm extrinsic incubation period (EIP) 
-      is possible to complete, and therefore whether heartworm preventatives may be required to be administered."
-      
-    })
+    filename <- normalizePath(file.path('./www',
+                                        paste(input$summaryselection)))
+    
+    # Return a list containing the filename and alt text
+    list(src = filename,
+         alt = paste("Image number", input$summaryselection),
+         #height=400,
+         width="100%")
+    
+  }, deleteFile = FALSE)
+  
   
   
   output$location <- renderText({
     paste("Your postcode:", input$postcode)
   })
   
-  output$capital.cities <- renderDataTable(capital.df, rownames = FALSE, options = list(searching = FALSE, 
-                                                                                        lengthMenu = list(c(-1), c("All")), 
-                                                                                        dom = "t"))
-                                           # %>%
-                                           #   formatStyle(""))
+  output$capital.cities <- renderTable({
+    capital.df
+  })
   
   output$locationplot <- renderPlot(locationplotdata())
   
@@ -233,12 +217,13 @@ This dashboard is not designed to show exactly where transmission events may occ
     trial[,6] <- cut(trial[,2],
                      breaks=c(0,120,130,1000),
                      labels=c("Transmission unlikely", 
-                              "Shoulder", "Transmission possible"))
+                              "Shoulder", "Transmission season"))
     trial[,7] <- str_c(get_fy(trial[,1], offset_period = -1),"/",get_fy(trial[,1]))
     trial[,8] <- day_of_year(trial[,1], type = "financial")
     
     yearbreaks <- seq((as.numeric(format(min(dseq), format="%Y"))+0.5), 
                       (as.numeric(format(max(dseq), format="%Y"))+0.5), by=1)
+    
     
     f <- seq.Date(min(dseq), max(dseq), by="month")
     f <- as.Date(format(f, format="%m-%d"), format="%m-%d")
@@ -255,7 +240,7 @@ This dashboard is not designed to show exactly where transmission events may occ
     
     new_col = c(as.factor(dm1), as.factor(dm2))
     
-    colours <- c("Transmission possible" = "firebrick3", "Transmission unlikely" = "royalblue3", 
+    colours <- c("Transmission season" = "firebrick3", "Transmission unlikely" = "royalblue3", 
                  "Shoulder" = "goldenrod2")
     
     years <- seq(as.numeric(format(min(dseq), format="%Y")), as.numeric(format(max(dseq), format="%Y")), by=1)
@@ -268,7 +253,6 @@ This dashboard is not designed to show exactly where transmission events may occ
       scale_y_reverse(breaks=years)+
       scale_x_discrete(breaks=new_col)+
       labs(title=postcode, x="Date", y="Year", fill="Status")+
-      theme_classic()+
       theme(plot.title= element_text(face="bold", size=20),
             axis.title.x = element_text(face="bold", size=16),
             axis.text.x = element_text(size=14),
@@ -277,7 +261,7 @@ This dashboard is not designed to show exactly where transmission events may occ
             legend.title = element_text(face="bold", size=16),
             legend.position = "bottom",
             legend.text = element_text(size=14))
-
+    
   })
   
   output$dailystatus <- renderText(statusdata())
@@ -293,7 +277,7 @@ This dashboard is not designed to show exactly where transmission events may occ
     todaystatus.df[,3] <- cut(todaystatus.df[,2],
                               breaks=c(0,120,130,1000),
                               labels=c(", transmission is unlikely",
-                                       ", transmission may become possible if there is more warm weather", ", transmission is possible, use preventatives where appropriate"))
+                                       ", the transmission season may be starting soon if there is more warm weather", ", transmission is possible, consult your veterinarian"))
     t <- paste((todaystatus.df[nrow(todaystatus.df),2]), "HDUs", todaystatus.df[nrow(todaystatus.df),3], sep="")
     t <- as.character(t)
     t
@@ -332,8 +316,8 @@ This dashboard is not designed to show exactly where transmission events may occ
     
     b <- which(status.df[,6]==1)
     
-    df1 <- data.frame(status.df[b,1], "EIP can complete")
-    df2 <- data.frame(status.df[a,1], "EIP cannot complete")
+    df1 <- data.frame(status.df[b,1], "season starts")
+    df2 <- data.frame(status.df[a,1], "season stops")
     
     #how many days since transmission was possible?
     for (k in 1:(nrow(df1))){
@@ -393,13 +377,15 @@ This dashboard is not designed to show exactly where transmission events may occ
     
     b <- which(perc.df[,6]==1)
     
-    df1 <- data.frame(perc.df[b,1], "EIP can complete")
-    df2 <- data.frame(perc.df[a,1], "EIP cannot complete")
+    df1 <- data.frame(perc.df[b,1], "season starts")
+    df2 <- data.frame(perc.df[a,1], "season stops")
     
     
     for (k in 1:(nrow(df1))){
       c <- day_of_year(df1[k,1]) - day_of_year(df2[k,1])
       df1[k,3] <- ifelse(c>=0, c, NA)
+      #df1[k,3] <- day_of_year(df1[k,1]) - day_of_year(df2[k,1])
+      
     }
     
     df2[,3] <- c(NA)
@@ -422,19 +408,6 @@ This dashboard is not designed to show exactly where transmission events may occ
     
   })
   outputOptions(output, 'percentagetable', suspendWhenHidden=TRUE)
-  
-  output$summaryImage <- renderImage({
-    
-    filename <- normalizePath(file.path('./www',
-                                        paste(input$summaryselection)))
-    
-    # Return a list containing the filename and alt text
-    list(src = filename,
-         alt = paste("Image number", input$summaryselection),
-         #height=400,
-         width="100%")
-    
-  }, deleteFile = FALSE)
   
 }
 
