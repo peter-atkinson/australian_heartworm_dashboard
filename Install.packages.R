@@ -3,7 +3,7 @@
 packages <- c("dplyr", "readr", "purrr", "stringr", "tibble", "magick", "aws.s3",
               "ncdf4", "rgdal", "ggplot2", "raster", "rasterVis", "maptools", "maps", "tidync",
               "sf", "sp", "rgeos", "devtools", "viridis", "wesanderson", "devtools", "cropgrowdays", "PROJ", "shiny",
-              "rasterVis")
+              "rasterVis", "shinycssloader", "rmarkdown", "tinytex", "knitr", "quarto")
 
 
 install.packages(packages, dependencies = TRUE)
@@ -11,3 +11,6 @@ install.packages(packages, dependencies = TRUE)
 install.packages("terra", dependencies = TRUE)
 
 devtools::install_github("becarioprecario/spatialkernel", force=TRUE)
+
+
+tinytex::install_tinytex()

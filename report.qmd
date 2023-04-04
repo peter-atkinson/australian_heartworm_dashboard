@@ -1,0 +1,35 @@
+---
+title: "Dirofilaria immitis extrinsic incubation period"
+author: "Peter Atkinson"
+date: "03/04/2022"
+output: pdf_document
+always_allow_html: true
+---
+
+```{r setup}
+#| include: false
+library(knitr)
+library(rmarkdown)
+library(dplyr)
+
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+## **Canine heartworm extrinsic incubation period**
+
+*Report produced on*:
+
+Canine heartworm is a parasitic disease caused by *Dirofilaria immitis*, and requires a mosquito for transmission. Infected dogs will harbour adult worms in the pulmonary arteries, which sexually reproduce to release immature parasites (microfilaria, L1 larvae) into the bloodstream. If a mosquito feeds on an infected dog, it may ingest some of these microfilaria.
+
+The mosquito plays an integral role in disease transmission. It not only transports larvae between dogs, the larvae will develop with the mosquito. This development is called [*extrinsic incubation*]{.underline} and is a requirement if transmission is to occur. The extrinsic incubation period (EIP) is the time taken for larvae to develop to their infective stage, which is a process highly dependant on temperature.
+
+We can model temperature to figure out when and where the EIP could be completed, and therefore when and where transmission may occur. The below figure is a plot for a given Australian postcode, showing the days (horizontal axis) of each year (vertical axis), and their corresponding EIP status. Days shown in red are where there was sufficient heat for EIP to complete. Days shown in blue are where it was too cold for EIP to complete. Days shown in yellow are the transition zones between the two.
+
+
+```{r plot, echo=FALSE}
+locationplotdata()
+```
+
+```{r table, echo = FALSE}
+cutoffdata()
+```

@@ -46,13 +46,13 @@ This dashboard is not designed to show exactly where transmission events may occ
   output$postcode_page <- renderUI({
     div(fluidRow(column(
       12,
-      wellPanel((h3("Location")),
+      wellPanel((h2("Location")),
                 selectizeInput(
                   "postcode",
                   "Enter your postcode:",
                   choices = poa.list,
                   selected = 5371,
-                  width = "100px"
+                  width = "200px"
                 ),
                 textOutput("postcode"),
                 div(
@@ -80,7 +80,13 @@ This dashboard is not designed to show exactly where transmission events may occ
         column(6,
                wellPanel(dataTableOutput(
                  "percentagetable"
-               )))
+               )),
+               fluidRow(
+                 wellPanel(
+                   tags$h2("Export data"),
+                   downloadButton("export", "Download My Location Report")
+                 )
+               ))
       )
     ))
   })
@@ -280,6 +286,7 @@ This dashboard is not designed to show exactly where transmission events may occ
 
   })
   
+  
   output$dailystatus <- renderText(statusdata())
   
   statusdata <- reactive({
@@ -423,6 +430,23 @@ This dashboard is not designed to show exactly where transmission events may occ
   })
   outputOptions(output, 'percentagetable', suspendWhenHidden=TRUE)
   
+  #export button
+  output$export <- downloadHandler(
+    filename = function() {
+      return("HW_EIP_locationreport.pdf")
+    },
+    content = function(file) {
+      rmarkdown::render(
+        "report.Qmd",
+        output_file = file,
+        output_format = "pdf_document",
+        envir = new.env(),
+        clean = TRUE
+      )
+    }
+  )
+  
+  
   output$summaryImage <- renderImage({
     
     filename <- normalizePath(file.path('./www',
@@ -435,7 +459,8 @@ This dashboard is not designed to show exactly where transmission events may occ
          width="100%")
     
   }, deleteFile = FALSE)
-  
+ 
+   
 }
 
 
