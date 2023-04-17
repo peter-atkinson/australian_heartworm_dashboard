@@ -3,7 +3,7 @@ library(sp); library(cropgrowdays); library(RColorBrewer); library(dplyr); libra
 library(maptools); library(raster); library(sf); library(sp); library(rgeos); library(rgdal); library(devtools)
 library(terra); library(rasterVis); library(tmap); library(tmaptools)
 library(plyr); library(busdater); library(stringr); library(dplyr); library(leaflet); library(shinycssloaders); library(rmarkdown); library(knitr);
-library(quarto); library(tinytex)
+library(quarto); library(tinytex); library(shinyWidgets)
 
 
 dseq <- seq(from = as.Date("01-01-2015", format = "%d-%m-%Y"), to = as.Date(Sys.Date()-2, format = "%d-%m-%Y"), by = 1)
@@ -36,9 +36,9 @@ capital.chdu <- currentmax.df[,((capital.codes))]
 preventatives <- c(0)
 for (i in 1:8){
   capital.chdu[2,i] <- if_else(capital.chdu[1,i] >= 130, 'On', 'Off')
-  preventatives[i] <- if_else(capital.chdu[2,i]=="On", "Preventatives required", "Preventatives not necessary")
+  preventatives[i] <- if_else(capital.chdu[2,i]=="On", "Preventatives may be required", "Preventatives not necessary")
   
 }
 capital.chdu <- rbind(capital.names, capital.chdu[2,], preventatives)
 capital.df <- as.data.frame(t(capital.chdu))
-colnames(capital.df) <- c("Capital city", (paste(max(dseq), "'s", " status", sep="")), "")
+colnames(capital.df) <- c("Capital city", (paste(max(dseq), "'s", " status", sep="")), "Are preventatives necessary?")

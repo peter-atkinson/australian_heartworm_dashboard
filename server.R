@@ -44,25 +44,28 @@ This dashboard is not designed to show exactly where transmission events may occ
   })
   
   output$postcode_page <- renderUI({
-    div(fluidRow(column(
-      12,
-      wellPanel((h2("Location")),
-                selectizeInput(
-                  "postcode",
-                  "Enter your postcode:",
-                  choices = poa.list,
-                  selected = 5371,
-                  width = "200px"
-                ),
-                textOutput("postcode"),
-                div(
-                  class = "output-container",
-                  shinycssloaders::withSpinner(
-                    plotOutput("locationplot"),
-                    color = getOption("spinner.color", default = "darkgrey")
-                  )
-                )
-      )
+    div(
+      fluidRow(
+        column(
+          12,
+          wellPanel((h2("Location")),
+                    selectizeInput(
+                      "postcode",
+                      "Enter your postcode:",
+                      choices = poa.list,
+                      selected = 5371,
+                      width = "200px"
+                    ),
+                    textOutput("postcode"),
+                    div(
+                      class = "output-container",
+                      shinycssloaders::withSpinner(
+                        plotOutput("locationplot"),
+                        color = getOption("spinner.color", default = "darkgrey")
+                      )
+                    ),
+                    actionButton("postcode_modal", strong("What does this graph show?"), icon = icon("info-circle"))
+          )
     )),
     
     fluidRow(
@@ -137,7 +140,9 @@ This dashboard is not designed to show exactly where transmission events may occ
                          )), 
                          dataTableOutput("capital.cities"),
                          br(),
-                         wellPanel(textOutput("tablecaption"))
+                         wellPanel(textOutput("tablecaption")),
+                         actionButton("capitalcity_modal", strong("What does this table show?"), icon = icon("info-circle"))
+
                ))
       )
       )
@@ -179,9 +184,8 @@ This dashboard is not designed to show exactly where transmission events may occ
   })
   
     output$leaflet_chdu <- renderLeaflet({
-    chdu <- paste("C:/Users/a1667856/Box/PhD/HDU Mapping/hdu_mapping/hdumaps/",
-                  "chdu", format(input$dates, format = "%Y%m%d"),
-                  ".tif", sep="")
+    chdu <- paste("C:/Users/a1667856/Box/PhD/HDU Mapping/hdu_mapping/hdumaps/", "chdu", format(input$dates, format = "%Y%m%d"), ".tif", sep="") #local running
+    #chdu <- paste("./hdumaps/", "chdu", format(input$dates, format = "%Y%m%d"), ".tif", sep="") #docker running
     
     chdu.r <- raster(chdu)
     
@@ -460,7 +464,19 @@ This dashboard is not designed to show exactly where transmission events may occ
     
   }, deleteFile = FALSE)
  
-   
+  #modals
+  observeEvent(input$postcode_modal, {
+    showModal(modalDialog(
+      title = h3("Postcode graph"),
+      "This is a graph showing, for your selected postcode input, what days of the year the extrinsic incubation period (EIP)
+      of heartworm could be completed (in red). The days that are blue show when EIP could not be completed. Those days shown
+      in orange indicate a time of the year where EIP may be able to complete if there is warmer weather.",
+      easyClose = TRUE,
+      size = "m",
+      fade = TRUE
+    ))
+  })
+  
 }
 
 
