@@ -1,7 +1,7 @@
 ---
-title: "Dirofilaria immitis extrinsic incubation period"
+title: "Australian Heartworm Dashboard"
 author: "Peter Atkinson"
-date: "03/04/2022"
+date: "`r format(Sys.time(), '%B %d, %Y')`"
 output: pdf_document
 always_allow_html: true
 ---
@@ -15,21 +15,73 @@ library(dplyr)
 knitr::opts_chunk$set(echo = TRUE)
 ```
 
-## **Canine heartworm extrinsic incubation period**
+**Canine heartworm biology and lifecycle**
 
-*Report produced on*:
+Canine heartworm disease is caused by infection with a parasite called *Dirofilaria immitis*. These are nematodal parasites, and adults live in the pulmonary arteries and occasionally in the right atrium. Adult worms can sexually reproduce and release immature larvae, called microfilaria or L1 larvae. The infection is transmitted by mosquitoes. A feeding mosquito can ingest microfilaria when feeding, and transmit them to another dog. Once transmitted, the larvae require approximately six months to mature, during which they migrate from the peripheral bite site to the pulmonary arteries.
 
-Canine heartworm is a parasitic disease caused by *Dirofilaria immitis*, and requires a mosquito for transmission. Infected dogs will harbour adult worms in the pulmonary arteries, which sexually reproduce to release immature parasites (microfilaria, L1 larvae) into the bloodstream. If a mosquito feeds on an infected dog, it may ingest some of these microfilaria.
+Clinical signs of infection include coughing and exercise intolerance, which can progress to right-sided heart failure, although infected dogs can also be subclinical. Clinical signs result from impedance to the blood flow through the pulmonary arteries. Therefore, the severity of clinical signs relies on the worm burden, the size of the pulmonary arteries and time, with worms causing vascular inflammation and hypertension with time.
 
-The mosquito plays an integral role in disease transmission. It not only transports larvae between dogs, the larvae will develop with the mosquito. This development is called [*extrinsic incubation*]{.underline} and is a requirement if transmission is to occur. The extrinsic incubation period (EIP) is the time taken for larvae to develop to their infective stage, which is a process highly dependant on temperature.
+**Extrinsic incubation period of *D. immitis***
 
-We can model temperature to figure out when and where the EIP could be completed, and therefore when and where transmission may occur. The below figure is a plot for a given Australian postcode, showing the days (horizontal axis) of each year (vertical axis), and their corresponding EIP status. Days shown in red are where there was sufficient heat for EIP to complete. Days shown in blue are where it was too cold for EIP to complete. Days shown in yellow are the transition zones between the two.
+*D. immitis* larvae require a mosquito to be transmitted to another dog. The larvae also undertake crucial developmental stages within the mosquito to progress from microfilariae (L1 larvae) into infective L3 larvae. This is known as the *extrinsic incubation period* (EIP)*,* and is a process controlled by temperature of the larvae. As mosquitoes are poikilothermic (cold-blooded), the temperature of the larvae within the mosquito is driven by the environmental temperature. Development of larvae completely ceases when the temperature is less than 14°C, and increases linearly with temperatures above this (Fortin and Slocombe, 1981). Development is completed when the larvae have experienced sufficient heat for a sufficient time, and this can be assessed by using a measure of degree-days, referred to as *heartworm development units* (HDUs). One HDU is accumulated for every 24 hours the temperature is above the 14°C threshold. For larvae to complete their development, they need at least 130 HDUs (Slocombe et al., 1989). The development from microfilaria to L3 larvae needs to be completed within the lifetime of the mosquito, which is approximately 30 days (Knight and Lok, 1998; Brown et al., 2012).
+
+**Modelling of extrinsic incubation period**
+
+The EIP of *D. immitis* can be modelled by using temperature data, and calculating areas where the required 130 HDUs could be accumulated by would-be larvae, over a 30 day period. We have modelled daily temperature data to calculate which areas would have experienced sufficient heat to allow the completion of the EIP. In these regions, transmission of *D. immitis* between dogs is possible, provided there are mosquitoes to act as vectors, and other infected dogs to act as a source of microfilaria. In regions where EIP cannot be completed, transmission of *D. immitis* is not possible.
+
+Daily calculation of HDUs accumulated was based on the methods outlined by Baskerville and Emin (1969).
+
+**Dashboard information**
+
+This dashboard collates weather data and provides information based on where and when the extrinsic incubation period of *D. immitis* could be completed. Maps on this dashboard are colour-coded. Blue zones indicate regions where development would not have been completed within the preceding 30 days. Red zones show where development would have been possible. Orange zones show a \'shoulder\' season, and if there is more warm weather in following days in these zones, development may be able to complete.
+
+We also provide postcode-based location information for users to select their postcode of interest and look at EIP trends since 2015.
+
+**Model limitations**
+
+We acknowledge the limitations of modelling weather data to predict transmission events. This model *does not* predict exactly where transmission will occur. Transmission requires mosquitoes to act as vectors, and other infected dogs to provide microfilaria. In addition, this model provides an *overestimate* of possible areas where EIP can be completed, by simultaneously *overestimating* the HDUs accumulated per mosquito lifespan, and *underestimating* the required HDUs for EIP to be completed:
+
+-          EIP completion is based on 130 HDUs being accumulated within one mosquito\'s lifespan. We estimated the lifespan to be 30 days, although the main two mosquitoes responsible for transmission in Australia live for approximately 17 days (*Ochlerotatus notoscriptus*) and 22 days (*Culex annulirostris*) when supporting *D. immitis* larvae (Russell and Geary, 1996)
+
+-          Most mosquito species require more than 130 HDUs for EIP to be completed (Slocombe et al., 1989)
+
+Therefore, we believe we have accounted for fine-scale differences in temperature and inaccuracies in weather data collection.
+
+**Data sources**
+
+Weather data is sourced through the open source SILO program, offered by the Queensland Government, accessed through <https://www.longpaddock.qld.gov.au/silo/>.
+
+The below figure is a plot for a given Australian postcode, showing the days (horizontal axis) of each year (vertical axis), and their corresponding EIP status. Days shown in red are where there was sufficient heat for EIP to complete. Days shown in blue are where it was too cold for EIP to complete. Days shown in yellow are the transition zones between the two.
 
 
 ```{r plot, echo=FALSE}
+
+knitr::opts_chunk$set(fig.align = 'center', fig.cap = 'caption', out.width = '100%', out.height = '100%', fig.env = 'landscape')
+
 locationplotdata()
+
 ```
 
+
 ```{r table, echo = FALSE}
-cutoffdata()
+kable(cutoffdata(),
+      row.names = FALSE,
+      caption = "caption",
+      table.attr = "style='width:100%;'",
+      newpage = TRUE)
+
 ```
+
+**References**
+
+Baskerville, G.L., Emin, P., 1969. Rapid Estimation of Heat Accumulation from Maximum and Minimum Temperatures. Ecology50, 514-517.
+
+Brown, H.E., Harrington, L.C., Kaufman, P.E., McKay, T., Bowman, D.D., Nelson, C.T., Wang, D., Lund, R., 2012. Key factors influencing canine heartworm, Dirofilaria immitis, in the United States. Parasites Vectors5, 245-245.
+
+Fortin, J.F., Slocombe, J.O.D., 1981. Temperature requirements for the development of Dirofilaria immitis in Aedes triseriatus and Ae. vexans. Mosq. News41, 625-633.
+
+Knight, D.H., Lok, J.B., 1998. Seasonality of heartworm infection and implications for chemoprophylaxis. Clin. Tech. Small. Anim. Pract.13, 77-82.
+
+Russell, R.C., Geary, M.J., 1996. The influence of microfilarial density of dog heartworm Dirofilaria immitis on infection rate and survival of Aedes notoscriptus and Culex annulirostris from Australia. Med Vet Entomol10, 29-34.
+
+Slocombe, J.O.D., Surgeoner, G.A., Srivastava, B., 1989. Determination of the heartworm transmission period and its used in diagnosis and control. In, Proceedings of the Heartworm Symposium '89, Charleston, South Carolia, USA.

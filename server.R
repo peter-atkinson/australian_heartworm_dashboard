@@ -18,7 +18,7 @@ function(input,output,session){
     tagList(
       tags$link(rel = "stylesheet", type = "text/main/css", href = "css/main.css"),
       wellPanel(div(style = "text-align: center;",
-                    h4(HTML("If this is your first time visiting, please read <b>'About'</b> before proceeding.
+                    h4(HTML("If this is your first time visiting, please read <b>'Dashboard background'</b>, found on the <b>'About'</b> page before proceeding.
                             If you have visited before, thanks for returning!"))),
                 br(),
                 br(),
@@ -27,19 +27,45 @@ function(input,output,session){
                                  width = "100%"))
       ),
       fluidRow(column(12, style = "margin-bottom: 5px;",
-                      wellPanel(HTML("<b> About </b>"),
-                                h4(HTML("Canine heartworm disease is a mosquito-transmitted disease
-                                                      affecting domestic dogs, wild canids, cats and very occasionally people. <br> <br>")),
-                                HTML("<i> <b> Transmission suitability </i> </b> <br>
-The disease relies on mosquitoes for transmission and completion of its lifecycle. If a mosquito feeds on an infected dog, it may ingest larvae that are circulating in the dog’s bloodstream. For the larvae and mosquito to become infective to other dogs, the larvae must develop and move into the mosquito mouth-parts. This process will only occur when the temperature is above 14°C, and the rate of development increases as temperature increases from this threshold. For development to complete, the larvae must experience 130 degree-days, which are accumulated at a rate of 1 degree-day per day above the threshold.
-Additionally, the mosquito vector lives for a maximum of 30 days. Therefore, for the larvae to become infective they need to experience their 130 degree-days within a 30 day window. If these constraints are not met, transmission is not possible.
-If transmission does occur, the implanted larvae migrate through the dog and develop into adult heartworms. This process takes 6 months. Monthly or long-acting medications can be administered that target the migrating larvae to prevent development into adults, and possible disease. <br> <br>
+                      wellPanel(h4(HTML("<b> Dashboard background </b>")),
+                                HTML("<i> <b> Canine heartworm biology and lifecycle </i> </b> <br>
+                                     Canine heartworm disease is caused by infection with a parasite called <i>Dirofilaria immitis</i>. These are nematodal parasites, and adults live in the pulmonary arteries and occasionally in the right atrium. Adult worms can sexually reproduce and release immature larvae, called microfilaria or L1 larvae. The infection is transmitted by mosquitoes. A feeding mosquito can ingest microfilaria when feeding, and transmit them to another dog. Once transmitted, the larvae require approximately six months to mature, during which they migrate from the peripheral bite site to the pulmonary arteries.
+Clinical signs of infection include coughing and exercise intolerance, which can progress to right-sided heart failure, although infected dogs can also be subclinical. Clinical signs result from impedance to the blood flow through the pulmonary arteries. Therefore, the severity of clinical signs relies on the worm burden, the size of the pulmonary arteries and time, with worms causing vascular inflammation and hypertension with time.
 
-<i> <b> Dashboard information </i> </b> <br>
- This dashboard combines nationally collected weather data with the temperature requirement of heartworm larval transmission to show regions where and when development within the mosquito can be completed. It also shows regions where development cannot be completed. Maps on this dashboard are colour-coded. Blue zones indicate regions where development would not have been completed within the preceding 30 days. Red zones show where development would have been possible. Orange zones show a ‘shoulder’ season, and if there is more warm weather in following days in these zones, development may be able to complete.
-This dashboard is not designed to show exactly where transmission events may occur. It shows regions where temperature is not sufficient to allow development within the mosquito, and where preventative medications are unlikely to be necessary.
-"
-                                )))))
+<br><br> <i> <b> Extrinsic incubation period of  D. immitis </i> </b> <br>
+<i>D. immitis</i> larvae require a mosquito to be transmitted to another dog. The larvae also undertake crucial developmental stages within the mosquito to progress from microfilariae (L1 larvae) into infective L3 larvae. This is known as the extrinsic incubation period (EIP), and is a process controlled by temperature of the larvae. As mosquitoes are poikilothermic (cold-blooded), the temperature of the larvae within the mosquito is driven by the environmental temperature. Development of larvae completely ceases when the temperature is less than 14°C, and increases linearly with temperatures above this (Fortin and Slocombe, 1981). Development is completed when the larvae have experienced sufficient heat for a sufficient time, and this can be assessed by using a measure of degree-days, referred to as heartworm development units (HDUs). One HDU is accumulated for every 24 hours the temperature is above the 14°C threshold. For larvae to complete their development, they need at least 130 HDUs (Slocombe et al., 1989). The development from microfilaria to L3 larvae needs to be completed within the lifetime of the mosquito, which is approximately 30 days (Knight and Lok, 1998; Brown et al., 2012).
+ 
+<br><br> <i> <b> Modelling of extrinsic incubation period </i> </b> <br>
+The EIP of <i>D. immitis</i> can be modelled by using temperature data, and calculating areas where the required 130 HDUs could be accumulated by would-be larvae, over a 30 day period. We have modelled daily temperature data to calculate which areas would have experienced sufficient heat to allow the completion of the EIP. In these regions, transmission of <i>D. immitis</i> between dogs is possible, provided there are mosquitoes to act as vectors, and other infected dogs to act as a source of microfilaria. In regions where EIP cannot be completed, transmission of <i>D. immitis</i> is not possible.
+Daily calculation of HDUs accumulated was based on the methods outlined by Baskerville and Emin (1969).
+
+<br><br> <i> <b> Dashboard information </i> </b> <br>
+This dashboard collates weather data and provides information based on where and when the extrinsic incubation period of <i>D. immitis</i> could be completed. Maps on this dashboard are colour-coded. Blue zones indicate regions where development would not have been completed within the preceding 30 days. Red zones show where development would have been possible. Orange zones show a ‘shoulder’ season, and if there is more warm weather in following days in these zones, development may be able to complete.
+
+We also provide postcode-based location information for users to select their postcode of interest and look at EIP trends since 2015.
+
+<br><br> <i> <b> Model limitations </i> </b> <br>
+We acknowledge the limitations of modelling weather data to predict transmission events. This model <i>does not</i> predict exactly where transmission will occur. Transmission requires mosquitoes to act as vectors, and other infected dogs to provide microfilaria. In addition, this model provides an overestimate of possible areas where EIP can be completed, by simultaneously <i>overestimating</i> the HDUs accumulated per mosquito lifespan, and <i>underestimating</i> the required HDUs for EIP to be completed: 
+<br><br>-	EIP completion is based on 130 HDUs being accumulated within one mosquito’s lifespan. We estimated the lifespan to be 30 days, although the main two mosquitoes responsible for transmission in Australia live for approximately 17 days (<i>Ochlerotatus notoscriptus</i>) and 22 days (<i>Culex annulirostris</i>) when supporting <i>D. immitis</i> larvae (Russell and Geary, 1996)
+<br>-	Most mosquito species require more than 130 HDUs for EIP to be completed (Slocombe et al., 1989)
+<br><br>Therefore, we believe we have accounted for fine-scale differences in temperature and inaccuracies in weather data collection.
+
+<br><br> <i> <b> Data sources </i> </b> <br>"),
+tags$p("Weather data is sourced through the open source ",
+       tags$a(href = "https://www.longpaddock.qld.gov.au/silo/", "SILO program,"),"offered by the Queensland Government"),
+HTML("
+     <br><br><br><br> <i> References </i>
+     <br>-Baskerville, G.L., Emin, P., 1969. Rapid Estimation of Heat Accumulation from Maximum and Minimum Temperatures. Ecology 50, 514-517.
+<br>-Brown, H.E., Harrington, L.C., Kaufman, P.E., McKay, T., Bowman, D.D., Nelson, C.T., Wang, D., Lund, R., 2012. Key factors influencing canine heartworm, Dirofilaria immitis, in the United States. Parasites Vectors 5, 245-245.
+<br>-Fortin, J.F., Slocombe, J.O.D., 1981. Temperature requirements for the development of Dirofilaria immitis in Aedes triseriatus and Ae. vexans. Mosq. News 41, 625-633.
+<br>-Knight, D.H., Lok, J.B., 1998. Seasonality of heartworm infection and implications for chemoprophylaxis. Clin. Tech. Small. Anim. Pract. 13, 77-82.
+<br>-Russell, R.C., Geary, M.J., 1996. The influence of microfilarial density of dog heartworm Dirofilaria immitis on infection rate and survival of Aedes notoscriptus and Culex annulirostris from Australia. Med Vet Entomol 10, 29-34.
+<br>-Slocombe, J.O.D., Surgeoner, G.A., Srivastava, B., 1989. Determination of the heartworm transmission period and its used in diagnosis and control. In, Proceedings of the Heartworm Symposium '89, Charleston, South Carolia, USA.
+
+"),
+
+     )
+                                )))
     
   })
   
@@ -64,7 +90,8 @@ This dashboard is not designed to show exactly where transmission events may occ
                         color = getOption("spinner.color", default = "darkgrey")
                       )
                     ),
-                    actionButton("postcode_modal", strong("What does this graph show?"), icon = icon("info-circle"))
+                    actionButton("postcode_modal", strong("What does this graph show?"), icon = icon("info-circle")),
+                    actionButton("plotly_output", paste0(HTML("<b> I want more information </b>"), "Warning: may take up to 2 minutes to load"))
           )
     )),
     
@@ -104,12 +131,11 @@ This dashboard is not designed to show exactly where transmission events may occ
       fluidRow(column(
         12, style = "margin-bottom: 5px;",
         wellPanel(style = "text-align: center;",
-                  h4(
-                    HTML(
-                      "If this is your first time visiting, please read <b>'About'</b> before proceeding.
-                            If you have visited before, thanks for returning!"
-                    )
-                  ))
+                  h4(HTML("If this is your first time visiting, please read <b>'Dashboard background'</b>, found on the <b>'About'</b> page before proceeding.
+                            If you have visited before, thanks for returning!")),
+                  br(),
+                  div(actionButton("action_about", label = HTML("Take me to <b>'About'</b>"))))
+        
       )),
       fluidRow(
         class = "css/flexbox",
@@ -177,15 +203,20 @@ This dashboard is not designed to show exactly where transmission events may occ
     input$action_ID,
     {if(firstLoad()) {firstLoad(FALSE)} })
   
+  observeEvent(
+    input$action_about,
+    {updateNavbarPage(inputId ="app", selected = "About")}
+  )
+  
   #create server objects - graphs etc
   output$selecteddatemap <- renderText({
-    (paste0("As of ", format(input$dates, format = "%d %b %Y"), 
+    (paste0("As of ", format(input$dates, format = "%d-%m-%Y"), 
            ", where can heartworm complete its extrinsic incubation period?"))
   })
   
     output$leaflet_chdu <- renderLeaflet({
-    chdu <- paste("C:/Users/a1667856/Box/PhD/HDU Mapping/hdu_mapping/hdumaps/", "chdu", format(input$dates, format = "%Y%m%d"), ".tif", sep="") #local running
-    #chdu <- paste("./hdumaps/", "chdu", format(input$dates, format = "%Y%m%d"), ".tif", sep="") #docker running
+    #chdu <- paste("C:/Users/a1667856/Box/PhD/HDU Mapping/hdu_mapping/hdumaps/", "chdu", format(input$dates, format = "%Y%m%d"), ".tif", sep="") #local running
+    chdu <- paste("./hdumaps/", "chdu", format(input$dates, format = "%Y%m%d"), ".tif", sep="") #docker running
     
     chdu.r <- raster(chdu)
     
@@ -226,16 +257,26 @@ This dashboard is not designed to show exactly where transmission events may occ
                                                                                         dom = "t"))
                                            # %>%
                                            #   formatStyle(""))
+
+# Postcode subsetting -----------------------------------------------------
+
   
-  output$locationplot <- renderPlot(locationplotdata())
-  
-  locationplotdata <- reactive({
+  postcodedata <- reactive({
     req(input$postcode != "")
     postcode <- input$postcode
     z <- which(poa.list==postcode)
     
-    trial <- data.frame(dseq, {if(length(all_of(z))!=0) dplyr::select(postcodes.all, (all_of(z)))
+    todaystatus.df <- data.frame(dseq, {if(length(all_of(z))!=0) dplyr::select(postcodes.all, (all_of(z)))
       else return(NULL)})
+    
+    return(todaystatus.df)
+    
+  })
+  
+  output$locationplot <- renderPlot(locationplotdata())
+  
+  locationplotdata <- reactive({
+    trial <- postcodedata()
     
     trial[,3] <- ifelse(trial[,2] > 130, 1, 0)
     trial[,4] <- as.numeric(format(trial[,1], format="%Y"))
@@ -244,8 +285,10 @@ This dashboard is not designed to show exactly where transmission events may occ
                      breaks=c(0,120,130,1000),
                      labels=c("Transmission unlikely", 
                               "Shoulder", "Transmission possible"))
-    trial[,7] <- str_c(get_fy(trial[,1], offset_period = -1),"/",get_fy(trial[,1]))
-    trial[,8] <- day_of_year(trial[,1], type = "financial")
+    #trial[,7] <- str_c(get_fy(trial[,1], offset_period = -1),"/",get_fy(trial[,1]))
+    #trial[,8] <- day_of_year(trial[,1], type = "financial")
+    
+    colnames(trial) <- c("Date", "cHDUs", "EIP Status", "Year", "Date-Day", "EIP Status for Transmission")
     
     yearbreaks <- seq((as.numeric(format(min(dseq), format="%Y"))+0.5), 
                       (as.numeric(format(max(dseq), format="%Y"))+0.5), by=1)
@@ -271,13 +314,13 @@ This dashboard is not designed to show exactly where transmission events may occ
     years <- seq(as.numeric(format(min(dseq), format="%Y")), as.numeric(format(max(dseq), format="%Y")), by=1)
     
     #calendar year
-    ggplot(trial, aes(trial[,5], y=trial[,4]))+
+    postcodeplot <- ggplot(trial, aes(trial[,5], y=trial[,4]))+
       geom_tile(aes(fill=trial[,6]))+
       scale_fill_manual(values=colours)+
       geom_hline(yintercept=yearbreaks)+
       scale_y_reverse(breaks=years)+
       scale_x_discrete(breaks=new_col)+
-      labs(title=postcode, x="Date", y="Year", fill="Status")+
+      labs(title=input$postcode, x="Date", y="Year", fill="Status")+
       theme_classic()+
       theme(plot.title= element_text(face="bold", size=20),
             axis.title.x = element_text(face="bold", size=16),
@@ -287,19 +330,81 @@ This dashboard is not designed to show exactly where transmission events may occ
             legend.title = element_text(face="bold", size=16),
             legend.position = "bottom",
             legend.text = element_text(size=14))
+    
+    postcodeplot
+    
+    #test <- ggplotly(postcodeplot)
 
   })
   
-  
+  # output$locationplotlyplot <- renderPlot(locationplotly())
+  # 
+  # locationplotly <- reactive({
+  #   
+  #   trial <- postcodedata()
+  #   
+  #   trial[,3] <- ifelse(trial[,2] > 130, 1, 0)
+  #   trial[,4] <- as.numeric(format(trial[,1], format="%Y"))
+  #   trial[,5] <- format(as.POSIXct(trial[,1]), "%m-%d")
+  #   trial[,6] <- cut(trial[,2],
+  #                    breaks=c(0,120,130,1000),
+  #                    labels=c("Transmission unlikely", 
+  #                             "Shoulder", "Transmission possible"))
+  #   #trial[,7] <- str_c(get_fy(trial[,1], offset_period = -1),"/",get_fy(trial[,1]))
+  #   #trial[,8] <- day_of_year(trial[,1], type = "financial")
+  #   
+  #   colnames(trial) <- c("Date", "cHDUs", "EIP Status", "Year", "Date-Day", "EIP Status for Transmission")
+  #   
+  #   yearbreaks <- seq((as.numeric(format(min(dseq), format="%Y"))+0.5), 
+  #                     (as.numeric(format(max(dseq), format="%Y"))+0.5), by=1)
+  #   
+  #   f <- seq.Date(min(dseq), max(dseq), by="month")
+  #   f <- as.Date(format(f, format="%m-%d"), format="%m-%d")
+  #   
+  #   g <- (seq.Date(min(dseq), max(dseq), by="month"))+14
+  #   g <- as.Date(format(g, format="%m-%d"), format="%m-%d")
+  #   
+  #   fnx = function(x) {
+  #     unlist(strsplit(as.character(x), '[19|20][0-9]{2}-', fixed=FALSE))[2]
+  #   }
+  #   
+  #   dm1 = sapply(f, fnx)
+  #   dm2 = sapply(g, fnx)
+  #   
+  #   new_col = c(as.factor(dm1), as.factor(dm2))
+  #   
+  #   colours <- c("Transmission possible" = "firebrick3", "Transmission unlikely" = "royalblue3", 
+  #                "Shoulder" = "goldenrod2")
+  #   
+  #   years <- seq(as.numeric(format(min(dseq), format="%Y")), as.numeric(format(max(dseq), format="%Y")), by=1)
+  #   
+  #   #calendar year
+  #   postcodeplot <- ggplot(trial, aes(trial[,5], y=trial[,4]))+
+  #     geom_tile(aes(fill=trial[,6]))+
+  #     scale_fill_manual(values=colours)+
+  #     geom_hline(yintercept=yearbreaks)+
+  #     scale_y_reverse(breaks=years)+
+  #     scale_x_discrete(breaks=new_col)+
+  #     labs(title=input$postcode, x="Date", y="Year", fill="Status")+
+  #     theme_classic()+
+  #     theme(plot.title= element_text(face="bold", size=20),
+  #           axis.title.x = element_text(face="bold", size=16),
+  #           axis.text.x = element_text(size=14),
+  #           axis.title.y = element_text(face="bold", size=16),
+  #           axis.text.y = element_text(size=14),
+  #           legend.title = element_text(face="bold", size=16),
+  #           legend.position = "bottom",
+  #           legend.text = element_text(size=14))
+  #   
+  # test <- ggplotly(postcodeplot)
+  #   
+  # })
+  # 
   output$dailystatus <- renderText(statusdata())
   
   statusdata <- reactive({
-    req(input$postcode != "")
-    postcode <- input$postcode
-    z <- which(poa.list==postcode)
-    
-    todaystatus.df <- data.frame(dseq, {if(length(all_of(z))!=0) dplyr::select(postcodes.all, (all_of(z)))
-      else return(NULL)})
+    todaystatus.df <- postcodedata()
+      
     todaystatus.df[,2] <- round(todaystatus.df[,2], digits=2)
     todaystatus.df[,3] <- cut(todaystatus.df[,2],
                               breaks=c(0,120,130,1000),
@@ -311,15 +416,12 @@ This dashboard is not designed to show exactly where transmission events may occ
     
   })
   
+  
+
   output$cutofftable <- renderDataTable(cutoffdata(), rownames = FALSE, options = list(searching = FALSE, pageLength = 25, orderSequence = list(1, 'asc')))
   
   cutoffdata <- reactive({
-    req(input$postcode != "")
-    postcode <- input$postcode
-    z <- which(poa.list==postcode)
-    
-    status.df <- data.frame(dseq, {if(length(all_of(z))!=0) dplyr::select(postcodes.all, (all_of(z)))
-      else return(NULL)})
+    status.df <- postcodedata()
     
     status.df[,3] <- ifelse(status.df[,2] > 130, 1, 0)
     status.df[,4] <- NA
@@ -476,6 +578,23 @@ This dashboard is not designed to show exactly where transmission events may occ
       fade = TRUE
     ))
   })
+  
+  observeEvent(input$plotly_output, {
+    showModal(modalDialog(
+      title = h3("Postcode graph"), "Your selected postocde with additional information",
+      div(
+        class = "output-container",
+        shinycssloaders::withSpinner(
+          plotlyOutput("locationplotlyplot"),
+          color = getOption("spinner.color", default = "darkgrey")
+        )
+      ),
+      easyClose = TRUE,
+      size = "l",
+      fade = TRUE
+    ))
+  })
+  
   
 }
 

@@ -3,7 +3,7 @@ library(sp); library(cropgrowdays); library(RColorBrewer); library(dplyr); libra
 library(maptools); library(raster); library(sf); library(sp); library(rgeos); library(rgdal); library(devtools)
 library(terra); library(rasterVis); library(tmap); library(tmaptools)
 library(plyr); library(busdater); library(stringr); library(dplyr); library(leaflet); library(shinycssloaders); library(rmarkdown); library(knitr);
-library(quarto); library(tinytex); library(shinyWidgets)
+library(quarto); library(tinytex); library(shinyWidgets); library(plotly);library(graphics)
 
 
 dseq <- seq(from = as.Date("01-01-2015", format = "%d-%m-%Y"), to = as.Date(Sys.Date()-2, format = "%d-%m-%Y"), by = 1)

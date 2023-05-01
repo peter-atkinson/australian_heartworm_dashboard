@@ -76,8 +76,7 @@ if (x >=0) {
     #thdu.r[thdu.r < 0] <- 0
     
     # Write the HDU raster out as a GTiff file:
-    #writeRaster(thdu.r, filename =  paste("C:/Users/a1667856/Box/PhD/HDU Mapping/hdu_mapping/hdumaps/", 
-                                          #hdu.pname[i], sep = ""), format = "GTiff", overwrite = TRUE) #local running
+    #writeRaster(thdu.r, filename =  paste("C:/Users/a1667856/Box/PhD/HDU Mapping/hdu_mapping/hdumaps/", hdu.pname[i], sep = ""), format = "GTiff", overwrite = TRUE) #local running
     
     writeRaster(thdu.r, filename =  paste("./hdumaps/", hdu.pname[i], sep = ""), format = "GTiff", overwrite = TRUE) #docker running
     
