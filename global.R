@@ -6,7 +6,7 @@ library(plyr); library(busdater); library(stringr); library(dplyr); library(leaf
 library(quarto); library(tinytex); library(shinyWidgets); library(plotly);library(graphics)
 
 
-dseq <- seq(from = as.Date("01-01-2015", format = "%d-%m-%Y"), to = as.Date(Sys.Date()-2, format = "%d-%m-%Y"), by = 1)
+dseq <- seq(from = as.Date("01-01-2015", format = "%d-%m-%Y"), to = as.Date(Sys.Date()-3, format = "%d-%m-%Y"), by = 1)
 
 #
 
@@ -20,6 +20,7 @@ poa20152022max <- readRDS("data/newpoa20152022max.RDS")
 poa2023max <- readRDS("data/poa2023max.RDS")
 
 postcodes.all <- bind_rows(poa20152022max, poa2023max)
+postcodes.all <- postcodes.all[1:(length(dseq)),]
 
 rownames(postcodes.all) <- dseq
 

@@ -74,24 +74,43 @@ HTML("
       fluidRow(
         column(
           12,
-          wellPanel((h2("Location")),
-                    selectizeInput(
+          wellPanel(fluidRow(h2("Location")),
+                    fluidRow(selectizeInput(
                       "postcode",
                       "Enter your postcode:",
                       choices = poa.list,
                       selected = 5371,
                       width = "200px"
-                    ),
-                    textOutput("postcode"),
+                    )),
+                    fluidRow(
+                      div(
+                        class = "output-container",
+                        shinycssloaders::withSpinner(
+                          plotOutput("simplelocationplot"),
+                          color = getOption("spinner.color", default = "darkgrey")
+                        )
+                      )),
+                    actionButton("postcode_modal", strong("What does this graph show?"), icon = icon("info-circle")),
+                    br(),
+                    br(),
+                    h4(strong("Want more information?")),
+                    fluidRow(selectizeInput(
+                      "yearselect",
+                      "Select 2 years to compare",
+                      choices = yseq.df$year,
+                      multiple = TRUE,
+                      selected = max(yseq.df$year),
+                      options = list(maxItems = 2)
+                    )),
+                    fluidRow(textOutput("postcode"),
                     div(
                       class = "output-container",
                       shinycssloaders::withSpinner(
-                        plotOutput("locationplot"),
+                        plotlyOutput("locationplot"),
                         color = getOption("spinner.color", default = "darkgrey")
                       )
-                    ),
-                    actionButton("postcode_modal", strong("What does this graph show?"), icon = icon("info-circle")),
-                    actionButton("plotly_output", paste0(HTML("<b> I want more information </b>"), "Warning: may take up to 2 minutes to load"))
+                    )),
+                    actionButton("postcodeyearly_modal", strong("What does this graph show?"), icon = icon("info-circle"))
           )
     )),
     
@@ -101,9 +120,7 @@ HTML("
         column(6,
                wellPanel(p(
                  strong(paste(
-                   as.Date((Sys.Date() - 2), format = "%d-%m-%Y"), "'s", " status:", sep =
-                     ""
-                 )),
+                   as.Date((Sys.Date() - 3), format = "%d-%m-%Y"), "'s", " status:", sep ="")),
                  textOutput(("dailystatus"))
                )),
                wellPanel(dataTableOutput("cutofftable"))),
@@ -148,7 +165,7 @@ HTML("
                            dateInput(
                              "dates",
                              label = NULL,
-                             value = (Sys.Date() - 2),
+                             value = (Sys.Date() - 3),
                              min = min(dseq),
                              max = max(dseq)
                            ),
@@ -215,8 +232,8 @@ HTML("
   })
   
     output$leaflet_chdu <- renderLeaflet({
-    #chdu <- paste("C:/Users/a1667856/Box/PhD/HDU Mapping/hdu_mapping/hdumaps/", "chdu", format(input$dates, format = "%Y%m%d"), ".tif", sep="") #local running
-    chdu <- paste("./hdumaps/", "chdu", format(input$dates, format = "%Y%m%d"), ".tif", sep="") #docker running
+    chdu <- paste("C:/Users/a1667856/Box/PhD/HDU Mapping/hdu_mapping/hdumaps/", "chdu", format(input$dates, format = "%Y%m%d"), ".tif", sep="") #local running
+    #chdu <- paste("./hdumaps/", "chdu", format(input$dates, format = "%Y%m%d"), ".tif", sep="") #docker running
     
     chdu.r <- raster(chdu)
     
@@ -269,15 +286,84 @@ HTML("
     todaystatus.df <- data.frame(dseq, {if(length(all_of(z))!=0) dplyr::select(postcodes.all, (all_of(z)))
       else return(NULL)})
     
+    todaystatus.df$year <- year(todaystatus.df$dseq)
+    
     return(todaystatus.df)
     
   })
   
-  output$locationplot <- renderPlot(locationplotdata())
+  simplelocationplotdata <- reactive({
+      trial <- postcodedata()
+      trial[,3] <- ifelse(trial[,2] > 130, 1, 0)
+      trial[,4] <- as.numeric(format(trial[,1], format="%Y"))
+      trial[,5] <- format(as.POSIXct(trial[,1]), "%m-%d")
+      trial[,6] <- cut(trial[,2],
+                       breaks=c(0,120,130,1000),
+                       labels=c("Transmission unlikely", 
+                                "Shoulder", "Transmission possible"))
+      
+      colnames(trial) <- c("Date", "cHDUs", "EIP Status", "Year", "Date-Day", "EIP Status for Transmission")
+      
+      yearbreaks <- seq((as.numeric(format(min(dseq), format="%Y"))+0.5), 
+                        (as.numeric(format(max(dseq), format="%Y"))+0.5), by=1)
+      
+      
+      f <- seq.Date(min(dseq), max(dseq), by="month")
+      f <- as.Date(format(f, format="%m-%d"), format="%m-%d")
+      
+      g <- (seq.Date(min(dseq), max(dseq), by="month"))+14
+      g <- as.Date(format(g, format="%m-%d"), format="%m-%d")
+      
+      fnx = function(x) {
+        unlist(strsplit(as.character(x), '[19|20][0-9]{2}-', fixed=FALSE))[2]
+      }
+      
+      dm1 = sapply(f, fnx)
+      dm2 = sapply(g, fnx)
+      
+      new_col = c(as.factor(dm1), as.factor(dm2))
+      
+      colours <- c("Transmission possible" = "firebrick3", "Transmission unlikely" = "royalblue3", 
+                   "Shoulder" = "goldenrod2")
+      
+      years <- seq(as.numeric(format(min(dseq), format="%Y")), as.numeric(format(max(dseq), format="%Y")), by=1)
+      
+      #calendar year
+      plot <- ggplot(trial, aes(trial[,5], y=trial[,4]))+
+        geom_tile(aes(fill=trial[,6]))+
+        scale_fill_manual(values=colours)+
+        geom_hline(yintercept=yearbreaks)+
+        scale_y_reverse(breaks=years)+
+        scale_x_discrete(breaks=new_col)+
+        labs(title=input$postcode, x="Date", y="Year", fill="Status")+
+        theme_classic()+
+        theme(plot.title= element_text(face="bold", size=20),
+              axis.title.x = element_text(face="bold", size=16),
+              axis.text.x = element_text(size=14),
+              axis.title.y = element_text(face="bold", size=16),
+              axis.text.y = element_text(size=14),
+              legend.title = element_text(face="bold", size=16),
+              legend.position = "bottom",
+              legend.text = element_text(size=14))
+      
+      plot
+  })
+  
+  output$simplelocationplot <- renderPlot(simplelocationplotdata())
+  
+  
+  postcodeyeardata <- reactive({
+    req(postcodedata())
+    req(!is.null(input$yearselect))
+    dplyr::filter(postcodedata(), year %in% input$yearselect)
+    
+  })
+  
+  output$locationplot <- renderPlotly(locationplotdata())
   
   locationplotdata <- reactive({
-    trial <- postcodedata()
-    
+    trial <- postcodeyeardata()
+    #browser()
     trial[,3] <- ifelse(trial[,2] > 130, 1, 0)
     trial[,4] <- as.numeric(format(trial[,1], format="%Y"))
     trial[,5] <- format(as.POSIXct(trial[,1]), "%m-%d")
@@ -285,13 +371,12 @@ HTML("
                      breaks=c(0,120,130,1000),
                      labels=c("Transmission unlikely", 
                               "Shoulder", "Transmission possible"))
-    #trial[,7] <- str_c(get_fy(trial[,1], offset_period = -1),"/",get_fy(trial[,1]))
-    #trial[,8] <- day_of_year(trial[,1], type = "financial")
     
     colnames(trial) <- c("Date", "cHDUs", "EIP Status", "Year", "Date-Day", "EIP Status for Transmission")
     
-    yearbreaks <- seq((as.numeric(format(min(dseq), format="%Y"))+0.5), 
-                      (as.numeric(format(max(dseq), format="%Y"))+0.5), by=1)
+    # yearbreaks <- seq((as.numeric(format(min(dseq), format="%Y"))+0.5), 
+    #                   (as.numeric(format(max(dseq), format="%Y"))+0.5), by=1)
+    # 
     
     f <- seq.Date(min(dseq), max(dseq), by="month")
     f <- as.Date(format(f, format="%m-%d"), format="%m-%d")
@@ -311,7 +396,9 @@ HTML("
     colours <- c("Transmission possible" = "firebrick3", "Transmission unlikely" = "royalblue3", 
                  "Shoulder" = "goldenrod2")
     
-    years <- seq(as.numeric(format(min(dseq), format="%Y")), as.numeric(format(max(dseq), format="%Y")), by=1)
+    years <- unique(trial$Year)
+    
+    yearbreaks <- c(min(years)+(max(years)-min(years))/2, max(years)+(max(years)-min(years))/2)
     
     #calendar year
     postcodeplot <- ggplot(trial, aes(trial[,5], y=trial[,4]))+
@@ -333,73 +420,15 @@ HTML("
     
     postcodeplot
     
-    #test <- ggplotly(postcodeplot)
-
+    postcode_plotly <- ggplotly(postcodeplot,
+                     tooltip = c("x", "fill"))
+    
+    postcode_plotly <- layout(postcode_plotly, legend = list(x = 0.3, y = -0.6, orientation = "h", 
+                                                             title = (list(text = "<b> Status </b>"))))
+    
   })
   
-  # output$locationplotlyplot <- renderPlot(locationplotly())
-  # 
-  # locationplotly <- reactive({
-  #   
-  #   trial <- postcodedata()
-  #   
-  #   trial[,3] <- ifelse(trial[,2] > 130, 1, 0)
-  #   trial[,4] <- as.numeric(format(trial[,1], format="%Y"))
-  #   trial[,5] <- format(as.POSIXct(trial[,1]), "%m-%d")
-  #   trial[,6] <- cut(trial[,2],
-  #                    breaks=c(0,120,130,1000),
-  #                    labels=c("Transmission unlikely", 
-  #                             "Shoulder", "Transmission possible"))
-  #   #trial[,7] <- str_c(get_fy(trial[,1], offset_period = -1),"/",get_fy(trial[,1]))
-  #   #trial[,8] <- day_of_year(trial[,1], type = "financial")
-  #   
-  #   colnames(trial) <- c("Date", "cHDUs", "EIP Status", "Year", "Date-Day", "EIP Status for Transmission")
-  #   
-  #   yearbreaks <- seq((as.numeric(format(min(dseq), format="%Y"))+0.5), 
-  #                     (as.numeric(format(max(dseq), format="%Y"))+0.5), by=1)
-  #   
-  #   f <- seq.Date(min(dseq), max(dseq), by="month")
-  #   f <- as.Date(format(f, format="%m-%d"), format="%m-%d")
-  #   
-  #   g <- (seq.Date(min(dseq), max(dseq), by="month"))+14
-  #   g <- as.Date(format(g, format="%m-%d"), format="%m-%d")
-  #   
-  #   fnx = function(x) {
-  #     unlist(strsplit(as.character(x), '[19|20][0-9]{2}-', fixed=FALSE))[2]
-  #   }
-  #   
-  #   dm1 = sapply(f, fnx)
-  #   dm2 = sapply(g, fnx)
-  #   
-  #   new_col = c(as.factor(dm1), as.factor(dm2))
-  #   
-  #   colours <- c("Transmission possible" = "firebrick3", "Transmission unlikely" = "royalblue3", 
-  #                "Shoulder" = "goldenrod2")
-  #   
-  #   years <- seq(as.numeric(format(min(dseq), format="%Y")), as.numeric(format(max(dseq), format="%Y")), by=1)
-  #   
-  #   #calendar year
-  #   postcodeplot <- ggplot(trial, aes(trial[,5], y=trial[,4]))+
-  #     geom_tile(aes(fill=trial[,6]))+
-  #     scale_fill_manual(values=colours)+
-  #     geom_hline(yintercept=yearbreaks)+
-  #     scale_y_reverse(breaks=years)+
-  #     scale_x_discrete(breaks=new_col)+
-  #     labs(title=input$postcode, x="Date", y="Year", fill="Status")+
-  #     theme_classic()+
-  #     theme(plot.title= element_text(face="bold", size=20),
-  #           axis.title.x = element_text(face="bold", size=16),
-  #           axis.text.x = element_text(size=14),
-  #           axis.title.y = element_text(face="bold", size=16),
-  #           axis.text.y = element_text(size=14),
-  #           legend.title = element_text(face="bold", size=16),
-  #           legend.position = "bottom",
-  #           legend.text = element_text(size=14))
-  #   
-  # test <- ggplotly(postcodeplot)
-  #   
-  # })
-  # 
+ 
   output$dailystatus <- renderText(statusdata())
   
   statusdata <- reactive({
@@ -579,22 +608,19 @@ HTML("
     ))
   })
   
-  observeEvent(input$plotly_output, {
+  
+  observeEvent(input$postcodeyearly_modal, {
     showModal(modalDialog(
-      title = h3("Postcode graph"), "Your selected postocde with additional information",
-      div(
-        class = "output-container",
-        shinycssloaders::withSpinner(
-          plotlyOutput("locationplotlyplot"),
-          color = getOption("spinner.color", default = "darkgrey")
-        )
-      ),
+      title = h3("Postcode graph"),
+      "This is a graph showing, for your selected postcode input, what days of the year the extrinsic incubation period (EIP)
+      of heartworm could be completed (in red). The days that are blue show when EIP could not be completed. Those days shown
+      in orange indicate a time of the year where EIP may be able to complete if there is warmer weather. This graph has more detail, 
+      and allows you to compare between years the dates where EIP becomes possible, or otherwise.",
       easyClose = TRUE,
-      size = "l",
+      size = "m",
       fade = TRUE
     ))
   })
-  
   
 }
 
