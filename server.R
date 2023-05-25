@@ -116,26 +116,24 @@ HTML("
     
     fluidRow(
       div(
-        style = "margin-left: 15px; margin-right: 15px",
+        #style = "margin-left: 15px; margin-right: 15px",
         column(6,
                wellPanel(p(
                  strong(paste(
                    as.Date((Sys.Date() - 3), format = "%d-%m-%Y"), "'s", " status:", sep ="")),
                  textOutput(("dailystatus"))
-               )),
-               wellPanel(dataTableOutput("cutofftable"))),
+               ))
+               #,
+               #wellPanel(dataTableOutput("cutofftable"))
+               ),
         column(6,
-               wellPanel(dataTableOutput(
-                 "percentagetable"
-               )),
-               fluidRow(
-                 wellPanel(
+               wellPanel(
                    tags$h2("Export data"),
                    downloadButton("export", "Download My Location Report")
                  )
                ))
       )
-    ))
+    )
   })
   
   output$standard <- renderUI({
@@ -183,8 +181,9 @@ HTML("
                          )), 
                          dataTableOutput("capital.cities"),
                          br(),
-                         wellPanel(textOutput("tablecaption")),
-                         actionButton("capitalcity_modal", strong("What does this table show?"), icon = icon("info-circle"))
+                         wellPanel(textOutput("tablecaption"))
+                         #,
+                         #actionButton("capitalcity_modal", strong("What does this table show?"), icon = icon("info-circle"))
 
                ))
       )
@@ -200,9 +199,8 @@ HTML("
                  radioButtons(
                    inputId = "summaryselection",
                    label = h4(strong("10 year summary of transmission zones")),
-                   choiceNames = c("1970-1979", "1980-1989", "1990-1999", "2000-2009", "2010-2019", "summary GIF", "51-year summary"),
-                   choiceValues = c("1.7079sum.png", "2.8089sum.png", "3.9099sum.png", "4.0009sum.png", "5.1019sum.png",
-                                    "summary.gif", "51yearsumm.png"),
+                   choiceNames = c("1970-1979", "1980-1989", "1990-1999", "2000-2009", "2010-2019"),
+                   choiceValues = c("1.7079sum.png", "2.8089sum.png", "3.9099sum.png", "4.0009sum.png", "5.1019sum.png"),
                    selected = NULL
                  )
                ),
@@ -232,8 +230,8 @@ HTML("
   })
   
     output$leaflet_chdu <- renderLeaflet({
-    chdu <- paste("C:/Users/a1667856/Box/PhD/HDU Mapping/hdu_mapping/hdumaps/", "chdu", format(input$dates, format = "%Y%m%d"), ".tif", sep="") #local running
-    #chdu <- paste("./hdumaps/", "chdu", format(input$dates, format = "%Y%m%d"), ".tif", sep="") #docker running
+    #chdu <- paste("C:/Users/a1667856/Box/PhD/HDU Mapping/hdu_mapping/hdumaps/", "chdu", format(input$dates, format = "%Y%m%d"), ".tif", sep="") #local running
+    chdu <- paste("./hdumaps/", "chdu", format(input$dates, format = "%Y%m%d"), ".tif", sep="") #docker running
     
     chdu.r <- raster(chdu)
     

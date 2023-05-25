@@ -76,9 +76,9 @@ if (x >=0) {
     #thdu.r[thdu.r < 0] <- 0
     
     # Write the HDU raster out as a GTiff file:
-    writeRaster(thdu.r, filename =  paste("C:/Users/a1667856/Box/PhD/HDU Mapping/hdu_mapping/hdumaps/", hdu.pname[i], sep = ""), format = "GTiff", overwrite = TRUE) #local running
+    #writeRaster(thdu.r, filename =  paste("C:/Users/a1667856/Box/PhD/HDU Mapping/hdu_mapping/hdumaps/", hdu.pname[i], sep = ""), format = "GTiff", overwrite = TRUE) #local running
     
-    #writeRaster(thdu.r, filename =  paste("./hdumaps/", hdu.pname[i], sep = ""), format = "GTiff", overwrite = TRUE) #docker running
+    writeRaster(thdu.r, filename =  paste("./hdumaps/", hdu.pname[i], sep = ""), format = "GTiff", overwrite = TRUE) #docker running
     
     cat(i, "\n")
     flush.console()
@@ -95,8 +95,8 @@ hdu.pname <- paste("hdu", format(dseq, format = "%Y%m%d"), ".tif", sep = "")
 chdu.pname <- paste("chdu", format(dseq, format = "%Y%m%d"), ".tif", sep = "")
 img.pname <- paste("chdu", format(dseq, format = "%Y%m%d"), sep = "")
 obname <- data.frame(idx = 1:length(hdu.pname), hdu = hdu.pname, chdu = chdu.pname, img = img.pname)
-obname$hdu <- paste("C:/Users/a1667856/Box/PhD/HDU Mapping/hdu_mapping/hdumaps/", obname$hdu, sep="") #local running
-#obname$hdu <- paste("./hdumaps/", obname$hdu, sep="") #docker running
+#obname$hdu <- paste("C:/Users/a1667856/Box/PhD/HDU Mapping/hdu_mapping/hdumaps/", obname$hdu, sep="") #local running
+obname$hdu <- paste("./hdumaps/", obname$hdu, sep="") #docker running
 
 nday <- 30
 it <- 0
@@ -136,9 +136,9 @@ if (x >=0) {
     tchdu.r <- app(tchdu.r, fun = sum)
     
     # Write the summed raster (i.e. the CHDU file) out as a GTiff:
-    writeRaster(tchdu.r, filename =  paste("C:/Users/a1667856/Box/PhD/HDU Mapping/hdu_mapping/hdumaps/", chdu.pname[i], sep = ""), overwrite = TRUE) #local running
+    #writeRaster(tchdu.r, filename =  paste("C:/Users/a1667856/Box/PhD/HDU Mapping/hdu_mapping/hdumaps/", chdu.pname[i], sep = ""), overwrite = TRUE) #local running
     
-    #writeRaster(tchdu.r, filename =  paste("./hdumaps/", chdu.pname[i], sep = ""), overwrite = TRUE) #docker running
+    writeRaster(tchdu.r, filename =  paste("./hdumaps/", chdu.pname[i], sep = ""), overwrite = TRUE) #docker running
     
     cat(i, "\n")
     
@@ -152,8 +152,8 @@ if (x >=0) {
 
 dseq <- seq(from = as.Date("01-01-2023", format = "%d-%m-%Y"), to = as.Date((Sys.Date()-3), format = "%d-%m-%Y"), by = 1)
 
-auspoa.sf <- st_read(dsn="C:/Users/a1667856/Box/PhD/HDU Mapping/hdu_mapping/maps", layer="POA_2021_AUST_GDA2020") #local running
-#auspoa.sf <- st_read(dsn="./maps", layer="POA_2021_AUST_GDA2020") #docker running
+#auspoa.sf <- st_read(dsn="C:/Users/a1667856/Box/PhD/HDU Mapping/hdu_mapping/maps", layer="POA_2021_AUST_GDA2020") #local running
+auspoa.sf <- st_read(dsn="./maps", layer="POA_2021_AUST_GDA2020") #docker running
 
 auspoa.sf <- auspoa.sf[-c(661, 662, 2525, 2526, 2642:2644),]
 list <- auspoa.sf$POA_NAME21
@@ -172,8 +172,8 @@ currentmean <- as.data.frame(matrix(NA, ncol=length(pnames), nrow = length(dseq)
 row.names(currentmean) <- c(dseq) 
 
 # Create a data frame of file indexes and the path to the source HDU files, the destination CHDU file names ('chdu' = cumulative HDU) and the image files:
-chdu.fname <- paste("C:/Users/a1667856/Box/PhD/HDU Mapping/hdu_mapping/hdumaps/", "chdu", format(dseq, format = "%Y%m%d"), ".tif", sep = "") #local running
-#chdu.fname <- paste("./hdumaps/", "chdu", format(dseq, format = "%Y%m%d"), ".tif", sep = "") #docker running
+#chdu.fname <- paste("C:/Users/a1667856/Box/PhD/HDU Mapping/hdu_mapping/hdumaps/", "chdu", format(dseq, format = "%Y%m%d"), ".tif", sep = "") #local running
+chdu.fname <- paste("./hdumaps/", "chdu", format(dseq, format = "%Y%m%d"), ".tif", sep = "") #docker running
 
 obname <- data.frame(idx = 1:length(list), poa = auspoa.sf$POA_NAME21)
 dseq.df <- data.frame(idx = 1:length(dseq), dseq=dseq)
