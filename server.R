@@ -120,7 +120,7 @@ HTML("
         column(6,
                wellPanel(p(
                  strong(paste(
-                   as.Date((Sys.Date() - 3), format = "%d-%m-%Y"), "'s", " status:", sep ="")),
+                   as.Date((Sys.Date() - 4), format = "%d-%m-%Y"), "'s", " status:", sep ="")),
                  textOutput(("dailystatus"))
                ))
                #,
@@ -163,7 +163,7 @@ HTML("
                            dateInput(
                              "dates",
                              label = NULL,
-                             value = (Sys.Date() - 3),
+                             value = (Sys.Date() - 4),
                              min = min(dseq),
                              max = max(dseq)
                            ),

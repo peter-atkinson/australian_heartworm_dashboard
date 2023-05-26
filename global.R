@@ -6,7 +6,7 @@ library(plyr); library(busdater); library(stringr); library(dplyr); library(leaf
 library(quarto); library(tinytex); library(shinyWidgets); library(plotly);library(graphics)
 
 
-dseq <- seq(from = as.Date("01-01-2015", format = "%d-%m-%Y"), to = as.Date(Sys.Date()-3, format = "%d-%m-%Y"), by = 1)
+dseq <- seq(from = as.Date("01-01-2015", format = "%d-%m-%Y"), to = as.Date(Sys.Date()-4, format = "%d-%m-%Y"), by = 1)
 
 #
 
