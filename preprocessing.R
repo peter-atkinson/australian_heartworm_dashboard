@@ -1,36 +1,42 @@
 #____
 #Get weather data
 
-library(dplyr); library(readr); library(purrr); library(stringr); library(tibble); library(magick); library(aws.s3)
+library(dplyr); library(readr); library(purrr); 
+library(stringr); library(tibble); library(magick); library(aws.s3)
+
+today <- format(as.Date((Sys.Date()-3), format = "%d-%m-%Y"), "%Y")
 
 save_object(
-  object = "Official/annual/max_temp/2023.max_temp.nc",
+  object = paste0("Official/annual/max_temp/", today, ".max_temp.nc"),
   bucket = "s3://silo-open-data/Official/daily/max_temp/", 
   region = "ap-southeast-2",
-  file = "data/2023.max.nc"
+  file = "data/temp.max.nc"
 )
 
 save_object(
-  object = "Official/annual/min_temp/2023.min_temp.nc",
+  object = paste0("Official/annual/min_temp/", today, ".min_temp.nc"),
   bucket = "s3://silo-open-data/Official/daily/min_temp/", 
   region = "ap-southeast-2",
-  file = "data/2023.min.nc"
+  file = "data/temp.min.nc"
 )
 
 
 #______
 #Get daily hdu file
-library(ncdf4); library(rgdal); library(ggplot2); library(rasterVis); #library(maptools); 
+library(ncdf4); #library(rgdal); 
+library(ggplot2); library(rasterVis); #library(maptools); 
 library(maps); 
-library(tidync); library(sf); library(sp); library(rgeos); library(devtools); library(terra); library(viridis); library(wesanderson)
+library(tidync); library(sf); library(sp); 
+#library(rgeos); 
+library(devtools); library(terra); library(viridis); library(wesanderson)
 library(raster)
 
 #auadm0ll.sf <- st_read(dsn="C:/Users/a1667856/Box/PhD/HDU Mapping/hdu_mapping/maps", layer="AU_adm0_gen-LL") #local running
 auadm0ll.sf <- st_read(dsn="./maps", layer="AU_adm0_gen-LL") #docker running
 auadm0ll.bb <- st_bbox(auadm0ll.sf)
 
-fn <- "data/2023.min.nc"
-fx <- "data/2023.max.nc"
+fn <- "data/temp.min.nc"
+fx <- "data/temp.max.nc"
 
 dseq <- seq(from = as.Date("01-01-2023", format = "%d-%m-%Y"), to = as.Date((Sys.Date()-3), format = "%d-%m-%Y"), by = 1)
 
@@ -89,7 +95,7 @@ if (x >=0) {
 #Stack this to the previous 29d of hdu daily files, for a chdu file
 library(devtools); library(spatialkernel); library(cropgrowdays)
 
-dseq <- seq(from = as.Date("01-01-2015", format = "%d-%m-%Y"), to = as.Date((Sys.Date()-3), format = "%d-%m-%Y"), by = 1)
+dseq <- seq(from = as.Date("01-01-2013", format = "%d-%m-%Y"), to = as.Date((Sys.Date()-3), format = "%d-%m-%Y"), by = 1)
 
 hdu.pname <- paste("hdu", format(dseq, format = "%Y%m%d"), ".tif", sep = "")
 chdu.pname <- paste("chdu", format(dseq, format = "%Y%m%d"), ".tif", sep = "")
@@ -107,10 +113,10 @@ dcut.n <- match(dcut, levels(dcut))
 ord <- which(dcut.n == it)
 ord <- (32:length(dseq))[ord]
 
-poa20152022max <- readRDS("data/newpoa20152022max.RDS")
+new20132022max <- readRDS("data/new20132022max.RDS")
 poa2023max <- readRDS("data/poa2023max.RDS")
 
-x <- length(dseq) - (nrow(poa20152022max)+nrow(poa2023max))-1
+x <- length(dseq) - (nrow(new20132022max)+nrow(poa2023max))-1
 i <- which(dseq==(Sys.Date())-3)
 
 if (x >=0) {

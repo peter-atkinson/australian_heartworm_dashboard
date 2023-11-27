@@ -1,25 +1,27 @@
 library(shiny); library(lubridate); library(DT); library(ggplot2); library(sf);
 library(sp); library(cropgrowdays); library(RColorBrewer); library(dplyr); library(scales);
-library(maptools); library(raster); library(sf); library(sp); library(rgeos); library(rgdal); library(devtools)
-library(terra); library(rasterVis); library(tmap); library(tmaptools)
-library(plyr); library(busdater); library(stringr); library(dplyr); library(leaflet); library(shinycssloaders); library(rmarkdown); library(knitr);
+#library(maptools); 
+library(raster); library(sf); library(sp); 
+#library(rgeos); library(rgdal); library(devtools)
+library(terra); library(rasterVis); library(tmap); library(tmaptools); library(plyr); 
+library(busdater); library(stringr); library(dplyr); library(leaflet); library(shinycssloaders); library(rmarkdown); library(knitr);
 library(quarto); library(tinytex); library(shinyWidgets); library(plotly);library(graphics)
 
 
-dseq <- seq(from = as.Date("01-01-2015", format = "%d-%m-%Y"), to = as.Date(Sys.Date()-4, format = "%d-%m-%Y"), by = 1)
+dseq <- seq(from = as.Date("01-01-2013", format = "%d-%m-%Y"), to = as.Date(Sys.Date()-5, format = "%d-%m-%Y"), by = 1)
 
 #
 
-yseq.df <- count(data.frame(dseq, year = strftime(dseq, "%Y")), "year")
+yseq.df <- plyr::count(data.frame(dseq, year = strftime(dseq, "%Y")), "year")
 
 #
 
 poa.list <- readRDS("data/poa.list")
 
-poa20152022max <- readRDS("data/newpoa20152022max.RDS")
+poa20132022max <- readRDS("data/new20132022max.RDS")
 poa2023max <- readRDS("data/poa2023max.RDS")
 
-postcodes.all <- bind_rows(poa20152022max, poa2023max)
+postcodes.all <- bind_rows(poa20132022max, poa2023max)
 postcodes.all <- postcodes.all[1:(length(dseq)),]
 
 rownames(postcodes.all) <- dseq

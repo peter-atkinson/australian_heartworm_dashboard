@@ -17,7 +17,9 @@ navbarPage(id="app",
   tabPanel("About",
            fluidRow(
              column(12, style = "margin-bottom: 5px;",
-                    wellPanel(h4(HTML("<b> Dashboard background </b>")),
+                    wellPanel(h4(HTML("<b> Dashboard background </b> <br> <br>
+                                      Researchers at the University of Adelaide have developed a novel tool to help veterinarians and pet owners to manage heartworm infections in practice. Read the background information, then explore our dashboard 
+                                      and find out your local risk! <br><br>")),
                                                              HTML("<i> <b> Canine heartworm biology and lifecycle </i> </b> <br>
                                      Canine heartworm disease is caused by infection with a parasite called <i>Dirofilaria immitis</i>. These are nematodal parasites, and adults live in the pulmonary arteries and occasionally in the right atrium. Adult worms can sexually reproduce and release immature larvae, called microfilaria or L1 larvae. The infection is transmitted by mosquitoes. A feeding mosquito can ingest microfilaria when feeding, and transmit them to another dog. Once transmitted, the larvae require approximately six months to mature, during which they migrate from the peripheral bite site to the pulmonary arteries.
 Clinical signs of infection include coughing and exercise intolerance, which can progress to right-sided heart failure, although infected dogs can also be subclinical. Clinical signs result from impedance to the blood flow through the pulmonary arteries. Therefore, the severity of clinical signs relies on the worm burden, the size of the pulmonary arteries and time, with worms causing vascular inflammation and hypertension with time.
@@ -43,6 +45,8 @@ We acknowledge the limitations of modelling weather data to predict transmission
 <br><br> <i> <b> Data sources </i> </b> <br>"),
 tags$p("Weather data is sourced through the open source ",
        tags$a(href = "https://www.longpaddock.qld.gov.au/silo/", "SILO program,"),"offered by the Queensland Government"),
+HTML("<br> <i> <b> Contact us </i> </b> <br>
+     Got questions? Send us an email: peter.atkinson@adelaide.edu.au"),
 HTML("
      <br><br><br><br> <i> References </i>
      <br>-Baskerville, G.L., Emin, P., 1969. Rapid Estimation of Heat Accumulation from Maximum and Minimum Temperatures. Ecology 50, 514-517.
