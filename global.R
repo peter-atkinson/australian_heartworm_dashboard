@@ -18,10 +18,11 @@ yseq.df <- plyr::count(data.frame(dseq, year = strftime(dseq, "%Y")), "year")
 
 poa.list <- readRDS("data/poa.list")
 
-poa20132022max <- readRDS("data/new20132022max.RDS")
+poa20132017max <- readRDS("data/poa20132017max.RDS")
+poa20182022max <- readRDS("data/poa20182022max.RDS")
 poa2023max <- readRDS("data/poa2023max.RDS")
 
-postcodes.all <- bind_rows(poa20132022max, poa2023max)
+postcodes.all <- bind_rows(poa20132017max, poa20182022max, poa2023max)
 postcodes.all <- postcodes.all[1:(length(dseq)),]
 
 rownames(postcodes.all) <- dseq
