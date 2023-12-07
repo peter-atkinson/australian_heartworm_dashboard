@@ -113,7 +113,10 @@ dcut.n <- match(dcut, levels(dcut))
 ord <- which(dcut.n == it)
 ord <- (32:length(dseq))[ord]
 
-new20132022max <- readRDS("data/new20132022max.RDS")
+poa20132017max <- readRDS("data/poa20132017max.RDS")
+poa20182022max <- readRDS("data/poa20182022max.RDS")
+new20132022max <- bind_rows(poa20132017max, poa20182022max)
+
 poa2023max <- readRDS("data/poa2023max.RDS")
 
 x <- length(dseq) - (nrow(new20132022max)+nrow(poa2023max))-1
