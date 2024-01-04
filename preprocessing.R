@@ -22,6 +22,20 @@ save_object(
 
 
 #______
+#need to figure out how many days in each year
+library(lubridate)
+
+# Create a dataframe with years and corresponding number of days
+start_year <- 2023
+end_year <- today
+years <- seq(start_year, end_year, by = 1)
+days_in_year <- sapply(years, getDaysInYear)
+
+df <- data.frame(years = years, days_in_year = days_in_year)
+
+ignore <- sum(df[1:(nrow(df)-1),2])
+
+#_____________________________________
 #Get daily hdu file
 library(ncdf4); #library(rgdal); 
 library(ggplot2); library(rasterVis); #library(maptools); 
@@ -46,7 +60,8 @@ poa2023max <- readRDS("data/poa2023max.RDS")
 
 #sine method
 x <- length(dseq) - nrow(poa2023max)-1
-i <- which(dseq==(Sys.Date())-3)
+i <- which(dseq==(Sys.Date())-3)-ignore
+
 
 if (x >=0) {
   for (i in (i - x):i) {
@@ -82,9 +97,9 @@ if (x >=0) {
     #thdu.r[thdu.r < 0] <- 0
     
     # Write the HDU raster out as a GTiff file:
-    #writeRaster(thdu.r, filename =  paste("C:/Users/a1667856/Box/PhD/HDU Mapping/hdu_mapping/hdumaps/", hdu.pname[i], sep = ""), format = "GTiff", overwrite = TRUE) #local running
+    #writeRaster(thdu.r, filename =  paste("C:/Users/a1667856/Box/PhD/HDU Mapping/hdu_mapping/hdumaps/", hdu.pname[i+ignore], sep = ""), format = "GTiff", overwrite = TRUE) #local running
     
-    writeRaster(thdu.r, filename =  paste("./hdumaps/", hdu.pname[i], sep = ""), format = "GTiff", overwrite = TRUE) #docker running
+    writeRaster(thdu.r, filename =  paste("./hdumaps/", hdu.pname[i+ignore], sep = ""), format = "GTiff", overwrite = TRUE) #docker running
     
     cat(i, "\n")
     flush.console()
