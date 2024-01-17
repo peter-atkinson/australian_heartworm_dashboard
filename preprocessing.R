@@ -25,6 +25,22 @@ save_object(
 #need to figure out how many days in each year
 library(lubridate)
 
+getDaysInYear <- function(year) {
+  if (as.integer(year) %% 4 == 0) {
+    if (as.integer(year) %% 100 == 0) {
+      if (as.integer(year) %% 400 == 0) {
+        return(366)  # Leap year
+      } else {
+        return(365)  # Not a leap year
+      }
+    } else {
+      return(366)  # Leap year
+    }
+  } else {
+    return(365)  # Not a leap year
+  }
+}
+
 # Create a dataframe with years and corresponding number of days
 start_year <- 2023
 end_year <- today
@@ -170,7 +186,7 @@ if (x >=0) {
   }
   
 }
-  
+
 #_________
 #Find each postcode's value
 
