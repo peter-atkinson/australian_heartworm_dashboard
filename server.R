@@ -234,15 +234,12 @@ HTML("
   })
   
     output$leaflet_chdu <- renderLeaflet({
-    #chdu <- paste("C:/Users/a1667856/Box/PhD/HDU Mapping/hdu_mapping/hdumaps/", "chdu", format(input$dates, format = "%Y%m%d"), ".tif", sep="") #local running
+    #chdu <- paste("/Users/a1667856/Library/CloudStorage/Box-Box/PhD/HDU Mapping/hdu_mapping/hdumaps/", "chdu", format(input$dates, format = "%Y%m%d"), ".tif", sep="") #local running
     chdu <- paste("./hdumaps/", "chdu", format(input$dates, format = "%Y%m%d"), ".tif", sep="") #docker running
     
     chdu.r <- raster(chdu)
     
     values <- getValues(chdu.r)
-    
-    # pal <- colorBin(c("royalblue3", "goldenrod2", "firebrick3"), bins=c(0, 120, 130, Inf),
-    #                 na.color = "transparent")
     
     pal <- colorBin(c("royalblue3", "firebrick3"), bins=c(0, 130, Inf),
                     na.color = "transparent")
@@ -252,7 +249,7 @@ HTML("
       setView(lng = 134.5, lat = -25.5, zoom = 4)%>%
       addRasterImage(x=chdu.r, opacity=0.55, col=pal) %>%
       addLegend(pal = pal, position = "bottomright", values = values,
-                labels = c("Transmission not possible", "Transmission unlikely", "Transmission possible"),
+                labels = c("EIP not possible", "EIP possible"),
                 title = "cHDU")
   })
   
