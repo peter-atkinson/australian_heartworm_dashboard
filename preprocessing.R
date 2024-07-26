@@ -20,7 +20,6 @@ save_object(
   file = "data/temp.min.nc"
 )
 
-
 #______
 #need to figure out how many days in each year
 library(lubridate)
