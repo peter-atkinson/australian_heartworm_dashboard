@@ -51,8 +51,10 @@ We acknowledge the limitations of modelling weather data to predict transmission
 <br><br>-	EIP completion is based on 130 HDUs being accumulated within one mosquito’s lifespan. We estimated the lifespan to be 30 days, although the main two mosquitoes responsible for transmission in Australia live for approximately 17 days (<i>Ochlerotatus notoscriptus</i>) and 22 days (<i>Culex annulirostris</i>) when supporting <i>D. immitis</i> larvae (Russell and Geary, 1996)
 <br>-	Most mosquito species require more than 130 HDUs for EIP to be completed (Slocombe et al., 1989)
 <br><br>Therefore, we believe we have accounted for fine-scale differences in temperature and inaccuracies in weather data collection.
-
-<br><br> <i> <b> Data sources </i> </b> <br>"),
+<br><br><i><b> More information</b></i><br>"),
+tags$p("For more information, please read our open-access publication in the Internation Journal of Parasitology ",
+        tags$a(href = "https://doi.org/10.1016/j.ijpara.2024.02.001", "here.")),
+HTML("<br> <i> <b> Data sources </i> </b> <br>"),
 tags$p("Weather data is sourced through the open source ",
        tags$a(href = "https://www.longpaddock.qld.gov.au/silo/", "SILO program,"),"offered by the Queensland Government"),
 HTML("<br> <i> <b> Contact us </i> </b> <br>
