@@ -8,10 +8,10 @@ navbarPage(id="app",
   tags$head(
     tags$link(rel = "stylesheet", type = "text/css", href = "main.css")
   ),
+  tabPanel("Australia-wide",
+           uiOutput("main_page")),
   tabPanel("My Location",
            uiOutput("postcode_page")),
-  tabPanel("Australia-wide",
-           uiOutput("aus_page")),
   tabPanel("Australian long term trends",
            uiOutput("historical_page")),
   tabPanel("About",
@@ -20,7 +20,7 @@ navbarPage(id="app",
                     wellPanel(h4(HTML("<b> Dashboard background </b> <br> <br>
                                       Researchers at the University of Adelaide have developed a novel tool to help veterinarians and pet owners to manage heartworm infections in practice. Read the background information, then explore our dashboard 
                                       and find out your local risk! <br><br>")),
-                              HTML("<i> <b> Canine heartworm biology and lifecycle </i> </b> <br>
+                                                             HTML("<i> <b> Canine heartworm biology and lifecycle </i> </b> <br>
                                      Canine heartworm disease is caused by infection with a parasite called <i>Dirofilaria immitis</i>. These are nematodal parasites, and adults live in the pulmonary arteries and occasionally in the right atrium. Adult worms can sexually reproduce and release immature larvae, called microfilaria or L1 larvae. The infection is transmitted by mosquitoes. A feeding mosquito can ingest microfilaria when feeding, and transmit them to another dog. Once transmitted, the larvae require approximately six months to mature, during which they migrate from the peripheral bite site to the pulmonary arteries.
 Clinical signs of infection include coughing and exercise intolerance, which can progress to right-sided heart failure, although infected dogs can also be subclinical. Clinical signs result from impedance to the blood flow through the pulmonary arteries. Therefore, the severity of clinical signs relies on the worm burden, the size of the pulmonary arteries and time, with worms causing vascular inflammation and hypertension with time.
 
@@ -41,15 +41,13 @@ We acknowledge the limitations of modelling weather data to predict transmission
 <br><br>-	EIP completion is based on 130 HDUs being accumulated within one mosquito’s lifespan. We estimated the lifespan to be 30 days, although the main two mosquitoes responsible for transmission in Australia live for approximately 17 days (<i>Ochlerotatus notoscriptus</i>) and 22 days (<i>Culex annulirostris</i>) when supporting <i>D. immitis</i> larvae (Russell and Geary, 1996)
 <br>-	Most mosquito species require more than 130 HDUs for EIP to be completed (Slocombe et al., 1989)
 <br><br>Therefore, we believe we have accounted for fine-scale differences in temperature and inaccuracies in weather data collection.
-<br><br><i><b> More information</b></i><br>"),
-                              tags$p("For more information, please read our open-access publication in the Internation Journal of Parasitology ",
-                                     tags$a(href = "https://doi.org/10.1016/j.ijpara.2024.02.001", "here.")),
-                              HTML("<br> <i> <b> Data sources </i> </b> <br>"),
-                              tags$p("Weather data is sourced through the open source ",
-                                     tags$a(href = "https://www.longpaddock.qld.gov.au/silo/", "SILO program,"),"offered by the Queensland Government"),
-                              HTML("<br> <i> <b> Contact us </i> </b> <br>
+
+<br><br> <i> <b> Data sources </i> </b> <br>"),
+tags$p("Weather data is sourced through the open source ",
+       tags$a(href = "https://www.longpaddock.qld.gov.au/silo/", "SILO program,"),"offered by the Queensland Government"),
+HTML("<br> <i> <b> Contact us </i> </b> <br>
      Got questions? Send us an email: peter.atkinson@adelaide.edu.au"),
-                              HTML("
+HTML("
      <br><br><br><br> <i> References </i>
      <br>-Baskerville, G.L., Emin, P., 1969. Rapid Estimation of Heat Accumulation from Maximum and Minimum Temperatures. Ecology 50, 514-517.
 <br>-Brown, H.E., Harrington, L.C., Kaufman, P.E., McKay, T., Bowman, D.D., Nelson, C.T., Wang, D., Lund, R., 2012. Key factors influencing canine heartworm, Dirofilaria immitis, in the United States. Parasites Vectors 5, 245-245.
@@ -58,4 +56,7 @@ We acknowledge the limitations of modelling weather data to predict transmission
 <br>-Russell, R.C., Geary, M.J., 1996. The influence of microfilarial density of dog heartworm Dirofilaria immitis on infection rate and survival of Aedes notoscriptus and Culex annulirostris from Australia. Med Vet Entomol 10, 29-34.
 <br>-Slocombe, J.O.D., Surgeoner, G.A., Srivastava, B., 1989. Determination of the heartworm transmission period and its used in diagnosis and control. In, Proceedings of the Heartworm Symposium '89, Charleston, South Carolia, USA.
 
-"))))))
+"))
+           ))
+)
+)
