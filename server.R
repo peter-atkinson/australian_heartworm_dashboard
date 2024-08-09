@@ -3,12 +3,12 @@ function(input,output,session){
   firstLoad <- reactiveVal(TRUE)
   
   #create ui output main_paload a reactive UI depending on conditions
-  output$main_page <- renderUI({
+  output$postcode_page <- renderUI({
     if(firstLoad()) {
       uiOutput("disclaimer")
     }
     else {
-      uiOutput("standard")
+      uiOutput("postcode")
     }
     
   })
@@ -75,8 +75,17 @@ HTML("
     
   })
   
-  output$postcode_page <- renderUI({
+  output$postcode <- renderUI({
     div(
+      fluidRow(column(
+        12, style = "margin-bottom: 5px;",
+        wellPanel(style = "text-align: center;",
+                  h4(HTML("If this is your first time visiting, please read <b>'Dashboard background'</b>, found on the <b>'About'</b> page before proceeding.
+                            If you have visited before, thanks for returning!")),
+                  br(),
+                  div(actionButton("action_about", label = HTML("Take me to <b>'About'</b>"))))
+        
+      )),
       fluidRow(
         column(
           12,
@@ -126,7 +135,7 @@ HTML("
         column(6,
                wellPanel(p(
                  strong(paste(
-                   as.Date((Sys.Date() - 5), format = "%d-%m-%Y"), "'s", " status:", sep ="")),
+                   as.Date((Sys.Date() - 6), format = "%d-%m-%Y"), "'s", " status:", sep ="")),
                  textOutput(("dailystatus"))
                ))
                #,
@@ -142,7 +151,7 @@ HTML("
     )
   })
   
-  output$standard <- renderUI({
+  output$aus_page <- renderUI({
     tagList(
       tags$link(
         rel = "stylesheet",
@@ -169,7 +178,7 @@ HTML("
                            dateInput(
                              "dates",
                              label = NULL,
-                             value = (Sys.Date() - 5),
+                             value = (Sys.Date() - 6),
                              min = min(dseq),
                              max = max(dseq)
                            ),
