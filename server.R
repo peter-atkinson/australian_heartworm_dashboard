@@ -135,7 +135,7 @@ HTML("
         column(6,
                wellPanel(p(
                  strong(paste(
-                   as.Date((Sys.Date() - 6), format = "%d-%m-%Y"), "'s", " status:", sep ="")),
+                   as.Date((Sys.Date() - 7), format = "%d-%m-%Y"), "'s", " status:", sep ="")),
                  textOutput(("dailystatus"))
                ))
                #,
@@ -178,7 +178,7 @@ HTML("
                            dateInput(
                              "dates",
                              label = NULL,
-                             value = (Sys.Date() - 6),
+                             value = (Sys.Date() - 7),
                              min = min(dseq),
                              max = max(dseq)
                            ),
@@ -245,8 +245,8 @@ HTML("
   })
   
     output$leaflet_chdu <- renderLeaflet({
-    #chdu <- paste("/Users/a1667856/Library/CloudStorage/Box-Box/PhD/HDU Mapping/hdu_mapping/hdumaps/", "chdu", format(input$dates, format = "%Y%m%d"), ".tif", sep="") #local running
-    chdu <- paste("./hdumaps/", "chdu", format(input$dates, format = "%Y%m%d"), ".tif", sep="") #docker running
+    chdu <- paste("/Users/a1667856/Library/CloudStorage/Box-Box/PhD/HDU Mapping/hdu_mapping/hdumaps/", "chdu", format(input$dates, format = "%Y%m%d"), ".tif", sep="") #local running
+    #chdu <- paste("./hdumaps/", "chdu", format(input$dates, format = "%Y%m%d"), ".tif", sep="") #docker running
     
     chdu.r <- raster(chdu)
     
