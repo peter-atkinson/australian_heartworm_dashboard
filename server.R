@@ -245,8 +245,8 @@ HTML("
   })
   
     output$leaflet_chdu <- renderLeaflet({
-    #chdu <- paste("/Users/a1667856/Library/CloudStorage/Box-Box/PhD/HDU Mapping/hdu_mapping/hdumaps/", "chdu", format(input$dates, format = "%Y%m%d"), ".tif", sep="") #local running
-    chdu <- paste("./hdumaps/", "chdu", format(input$dates, format = "%Y%m%d"), ".tif", sep="") #docker running
+    chdu <- paste("/Users/a1667856/Library/CloudStorage/Box-Box/PhD/HDU Mapping/hdu_mapping/hdumaps/", "chdu", format(input$dates, format = "%Y%m%d"), ".tif", sep="") #local running
+    #chdu <- paste("./hdumaps/", "chdu", format(input$dates, format = "%Y%m%d"), ".tif", sep="") #docker running
     
     chdu.r <- raster(chdu)
     
@@ -266,8 +266,7 @@ HTML("
   
     output$mapcaption <- renderText({
       "The above map of Australia shows regions where heartworm can complete its extrinsic incubation period (EIP). This is where there has been
-    sufficient heat in the environment for larvae to become infectious. Red zones are where EIP can be completed. Orange zones show areas where
-    if there is more warm weather, EIP may be able to be completed. Blue zones are areas where it has been too cold for EIP to complete, so 
+    sufficient heat in the environment for larvae to become infectious. Red zones are where EIP can be completed, which may support transmission, depending on the occurrence of both a mosquito population and proximity to another infected host. Blue zones are areas where it has been too cold for EIP to complete, so 
     transmission of heartworm is not possible."
     })
     

@@ -32,8 +32,7 @@ The EIP of <i>D. immitis</i> can be modelled by using temperature data, and calc
 Daily calculation of HDUs accumulated was based on the methods outlined by Baskerville and Emin (1969).
 
 <br><br> <i> <b> Dashboard information </i> </b> <br>
-This dashboard collates weather data and provides information based on where and when the extrinsic incubation period of <i>D. immitis</i> could be completed. Maps on this dashboard are colour-coded. Blue zones indicate regions where development would not have been completed within the preceding 30 days. Red zones show where development would have been possible. Orange zones show a ‘shoulder’ season, and if there is more warm weather in following days in these zones, development may be able to complete.
-
+This dashboard collates weather data and provides information based on where and when the extrinsic incubation period of <i>D. immitis</i> could be completed. Maps on this dashboard are colour-coded. Blue zones indicate regions where development would not have been completed within the preceding 30 days. Red zones show where development would have been possible.
 We also provide postcode-based location information for users to select their postcode of interest and look at EIP trends since 2015.
 
 <br><br> <i> <b> Model limitations </i> </b> <br>
