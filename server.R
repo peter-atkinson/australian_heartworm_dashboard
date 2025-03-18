@@ -266,8 +266,7 @@ HTML("
   
     output$mapcaption <- renderText({
       "The above map of Australia shows regions where heartworm can complete its extrinsic incubation period (EIP). This is where there has been
-    sufficient heat in the environment for larvae to become infectious. Red zones are where EIP can be completed. Orange zones show areas where
-    if there is more warm weather, EIP may be able to be completed. Blue zones are areas where it has been too cold for EIP to complete, so 
+    sufficient heat in the environment for larvae to become infectious. Red zones are where EIP can be completed, which may support transmission, depending on the occurrence of both a mosquito population and proximity to another infected host. Blue zones are areas where it has been too cold for EIP to complete, so 
     transmission of heartworm is not possible."
     })
     
