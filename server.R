@@ -583,7 +583,7 @@ HTML("
     },
     content = function(file) {
       rmarkdown::render(
-        "report.Qmd",
+        "report.qmd",
         output_file = file,
         output_format = "pdf_document",
         envir = new.env(),
