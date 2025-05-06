@@ -54,6 +54,8 @@ We acknowledge the limitations of modelling weather data to predict transmission
 <br><br><i><b> More information</b></i><br>"),
 tags$p("For more information, please read our open-access publication in the Internation Journal of Parasitology ",
         tags$a(href = "https://doi.org/10.1016/j.ijpara.2024.02.001", "here.")),
+tags$p("To access a discussion about how to apply this work in your clinical practice, please see our open-access publication in the Australian Veterinary Journal ",
+       tags$a(href = "https://doi.org/10.1111/avj.13379", "here.")),
 HTML("<br> <i> <b> Data sources </i> </b> <br>"),
 tags$p("Weather data is sourced through the open source ",
        tags$a(href = "https://www.longpaddock.qld.gov.au/silo/", "SILO program,"),"offered by the Queensland Government"),
@@ -284,9 +286,30 @@ HTML("
   output$capital.cities <- renderDataTable(capital.df, rownames = FALSE, options = list(searching = FALSE, 
                                                                                         lengthMenu = list(c(-1), c("All")), 
                                                                                         dom = "t"))
-                                           # %>%
-                                           #   formatStyle(""))
 
+  # output$capital.status <- renderDataTable({
+  #   capital.status.df <- round(capital.status.df, digits = 2)
+  #   recent.date <- as.Date(max(dseq), format = "%d%M%Y")
+  #   
+  #   print(format(input$dates, format = "%d-%m-%Y"))
+  #   browser()
+  #   
+  #   capital.chdu <- currentmax.df[,(which(dseq == input$dates))]
+  #   
+  #   preventatives <- c(0)
+  #   for (i in 1:8){
+  #     capital.chdu[2,i] <- if_else(capital.chdu[1,i] >= 130, 'On', 'Off')
+  #     preventatives[i] <- if_else(capital.chdu[2,i]=="On", "Preventatives may be required", "Preventatives not necessary")
+  # 
+  #   }
+  #   capital.chdu <- rbind(capital.names, capital.chdu, preventatives)
+  #   capital.df <- as.data.frame(t(capital.chdu))
+  #   colnames(capital.df) <- c("Capital city", (paste(max(dseq), "'s", " cHDUs", sep="")), (paste(max(dseq), "'s", " status", sep="")), "Are preventatives necessary?")
+  # 
+  #   capital.hdu
+  # 
+  # })
+  
 # Postcode subsetting -----------------------------------------------------
 
   
@@ -583,7 +606,7 @@ HTML("
     },
     content = function(file) {
       rmarkdown::render(
-        "report.Qmd",
+        "report.qmd",
         output_file = file,
         output_format = "pdf_document",
         envir = new.env(),
