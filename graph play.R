@@ -4,12 +4,12 @@ trial <- data.frame(dseq, postcodes.all[,1000])
 
 dseq <- seq(from = as.Date("01-01-2015", format = "%d-%m-%Y"), to = as.Date(Sys.Date(), format = "%d-%m-%Y"), by = 1)
 list <- readRDS("list")
-postcodes.all <- readRDS("poa20152021max.RDS")
+postcodes.all <- readRDS("data/newpoa20152022max.RDS")
 postcodes.all[nrow(postcodes.all)+(length(dseq) - nrow(postcodes.all)),] <- NA
 
 postcode <- 5067
-req(input$postcode != "")
-postcode <- ifelse(input$postcode < 1000, paste0("0", input$postcode), input$postcode)
+#req(input$postcode != "")
+#postcode <- ifelse(input$postcode < 1000, paste0("0", input$postcode), input$postcode)
 z <- which(list==postcode)
 
 status.df <- data.frame(dseq, postcodes.all[,which(list==postcode)])
@@ -49,9 +49,9 @@ cutoff.df <- data.frame(cutoff.df[order(as.Date(cutoff.df[,1], format="%Y-%m-%d"
 df1[,3] <- c(day_of_year(df1[,1]) - day_of_year(df2[,1]))
 df2[,3] <- NA
 
-poa <- 0800
-postcode <- as.character(ifelse(poa < 1000, paste0("0", poa), poa))
-z <- which(list==postcode)
+# poa <- 0800
+# postcode <- as.character(ifelse(poa < 1000, paste0("0", poa), poa))
+# z <- which(list==postcode)
 
 trial <- data.frame(dseq, {if(length(z)!=0) select(postcodes.all, (z))
   else return(NULL)})
@@ -286,25 +286,6 @@ tm_shape(chdu.r, bbox=bbox_new)+
             title= paste('Cumulative HDUs', date, sep=" "), 
             title.position = c('right', 'top'))
 
-##_______________________
-#Bind the dataframes
-
-newmax <- readRDS("C:/Users/a1667856/Box/PhD/HDU Mapping/hdu_mapping/newpoa20152021max.RDS")
-
-poa2022max <- poa20152022max[-c(1:2557),]
-
-newpoa20152022max <- rbind(newmax, poa2022max)
-
-
-med <- readRDS("2022med.RDS")
-med <- rbind(med, readRDS("newmed.RDS"))
-saveRDS(med, "poa20152022med.RDS")
-
-
-
-##
-newpoa20152022max <- newpoa20152022max[-2874,]
-
 
 #____________________________
 library(plotly); library(sf)
@@ -400,57 +381,79 @@ leaflet(data = chdu.r, options = leafletOptions(zoomControl=FALSE)) %>%
 
 
 #_______________________________________________________________
+library(scales)
+
+data.df <- readRDS("data/poa2023max.RDS")
+poa.df <- readRDS("data/poa.list")
+
+postcode = "5371"
+
+dseq <- seq(from = as.Date("01-01-2023", format = "%d-%m-%Y"), to = as.Date("31-12-2024", format = "%d-%m-%Y"), by = 1)
+data.df <- data.df[1:length(dseq),]
+
+trial <- data.frame(dseq, "chdu" = data.df[,which(poa.df == postcode)])
+
+trial[,3] <- ifelse(trial[,2] > 130, 1, 0)
+trial[,4] <- as.numeric(format(trial[,1], format="%Y"))
+trial[,5] <- format(as.POSIXct(trial[,1]), "%m-%d")
+trial[,6] <- cut(trial[,2],
+                 breaks=c(0,130,Inf),
+                 labels=c("Transmission unlikely", 
+                          "Transmission season"))
 
 
-dseq <- seq(from = as.Date("01-01-2023", format = "%d-%m-%Y"), to = as.Date((Sys.Date()-2), format = "%d-%m-%Y"), by = 1)
+yearbreaks <- seq((as.numeric(format(min(dseq), format="%Y"))+0.5), 
+                  (as.numeric(format(max(dseq), format="%Y"))+0.5), by=1)
 
-poa2023max.t <- poa2023max
 
-poa2023max.t <- poa2023max.t[1:72,]
+f <- seq.Date(min(dseq), max(dseq), by="month")
+f <- as.Date(format(f, format="%m-%d"), format="%m-%d")
 
-x <- length(dseq) - nrow(poa2023max.t)-1
+g <- (seq.Date(min(dseq), max(dseq), by="month"))+14
+g <- as.Date(format(g, format="%m-%d"), format="%m-%d")
 
-i <- which(dseq==(Sys.Date())-2)
-
-for(i in (i-x):i){
-  # for(i in 1:length(dseq)){
-  #create individual raster brick for t min
-  trasbrick <- brick(fn)
-  #subset only 1 date - date is i to i
-  tmin.r <- subset(trasbrick, i:i)
-  #plot(tmin.r)
-  
-  #repeat for t max
-  trasbrick <- brick(fx)
-  tmax.r <- subset(trasbrick, i:i)
-  #plot(tmax.r)
-  
-  Tavg <- (tmax.r+tmin.r)/2
-  base <- 14
-  W <- (tmax.r-tmin.r)/2
-  Q <- (base-Tavg)/W
-  
-  #transform >1 into 1, <-1 into -1
-  
-  Q[Q < -1] <- -1
-  Q[Q > 1] <- 1
-  
-  A <- asin(Q)
-  
-  #calculate the HDU per day
-  thdu.r <- ((W*cos(A))-((base-Tavg)*((pi/2)-A)))/pi
-  plot(thdu.r)
-  
-  # If HDU is less than zero, assign a value of zero:
-  #thdu.r[thdu.r < 0] <- 0
-  
-  # filename <- paste("C:/Users/a1667856/Box/PhD/HDU Mapping/hdu_mapping/hdumaps", hdu.pname[i], sep="")
-  
-  # Write the HDU raster out as a GTiff file:
-  #writeRaster(thdu.r, filename =  paste("C:/Users/a1667856/Box/PhD/HDU Mapping/hdu_mapping/hdumaps/", hdu.pname[i], sep=""), format="GTiff", overwrite=TRUE)
-  
-  #writeRaster(thdu.r, file.path("C:/Users/a1667856/Box/PhD/HDU Mapping/hdu_mapping/hdumaps", hdu.pname[i]), overwrite=TRUE)
-  cat(i, "\n"); flush.console()
+fnx = function(x) {
+  unlist(strsplit(as.character(x), '[19|20][0-9]{2}-', fixed=FALSE))[2]
 }
 
+dm1 = sapply(f, fnx)
+dm2 = sapply(g, fnx)
 
+new_col = c(as.factor(dm1), as.factor(dm2))
+
+new_col <- c(as.factor(dm1))
+
+colours <- c("Transmission season" = "brown3", "Transmission unlikely" = "blue3")
+
+years <- seq(as.numeric(format(min(dseq), format="%Y")), as.numeric(format(max(dseq), format="%Y")), by=1)
+
+newnew_col <- new_col
+
+# ddm1 <- shift(dm1, delta=7)
+# ddm1
+# 
+# trial <- trial[-(1:181),]
+
+years <- seq(as.numeric(format(min(dseq), format="%Y")), as.numeric(format(max(dseq), format="%Y")), by=1)
+
+ggplot(trial) +
+  geom_tile(aes(x = dseq, fill = trial[,6], colour = trial[,6], y = 1), height = 0.2) +
+  scale_fill_manual(values = colours) +
+  scale_colour_manual(values = colours) +
+  coord_cartesian(ylim = c(0.8, 1.2))+
+  scale_x_date(
+    date_breaks = "1 month",
+    date_labels = "%d-%m",
+    limits = as.Date(c("2022-12-01", "2025-01-01")),
+    expand = c(0, 0)
+  ) +
+  labs(title = postcode, x = "Date", fill = "Status", colour = "Status") +
+  #theme_classic()+
+  theme(
+    plot.title = element_text(face = "bold", size = 12),
+    axis.title.x = element_text(size = 12),
+    axis.text.x = element_text(size = 10, angle = 0, hjust = 0.5),
+    axis.title.y = element_blank(),
+    axis.text.y = element_blank(),
+    axis.ticks.y = element_blank()
+  )
