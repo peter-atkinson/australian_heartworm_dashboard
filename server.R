@@ -283,9 +283,44 @@ HTML("
     paste("Your postcode:", input$postcode)
   })
   
-  output$capital.cities <- renderDataTable(capital.df, rownames = FALSE, options = list(searching = FALSE, 
-                                                                                        lengthMenu = list(c(-1), c("All")), 
-                                                                                        dom = "t"))
+   output$capital.cities <- renderDataTable({
+    
+    # Filter the data based on the current postcode
+    #currentmax.df <- postcodes.all[(nrow(postcodes.all)-1),]
+    currentmax.df <- postcodes.all[which(dseq == input$dates),]
+    
+    # Filter based on the columns you need, for instance, using `capital.codes`
+    capital.status.df <- postcodes.all[, capital.codes]
+    
+    # Process the data related to the postcode
+    capital.chdu <- currentmax.df[, capital.codes]
+    capital.chdu <- round(capital.chdu, digits = 2)
+    
+    # Logic to check if preventatives are required
+    preventatives <- rep(NA, 8)  # Assuming there are 8 columns to check
+    for (i in 1:8) {
+      capital.chdu[2,i] <- if_else(capital.chdu[1,i] >= 130, 'On', 'Off')
+      preventatives[i] <- if_else(capital.chdu[2,i] == "On", 
+                                   "Preventatives may be required", 
+                                   "Preventatives not necessary")
+    }
+    
+    # Combine data into a final data frame
+    capital.chdu <- rbind(capital.names, capital.chdu, preventatives)
+    capital.df <- as.data.frame(t(capital.chdu))
+    
+    # Set proper column names dynamically
+    colnames(capital.df) <- c("Capital city", 
+                              paste(input$dates, "'s", " cHDUs", sep=""), 
+                              paste(input$dates, "'s", " status", sep=""), 
+                              "Are preventatives necessary?")
+    
+    # Return the data table
+    datatable(capital.df, rownames = FALSE, 
+              options = list(searching = FALSE, 
+                             lengthMenu = list(c(-1), c("All")), 
+                             dom = "t"))
+  })
 
   # output$capital.status <- renderDataTable({
   #   capital.status.df <- round(capital.status.df, digits = 2)

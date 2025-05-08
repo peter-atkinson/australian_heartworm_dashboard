@@ -30,7 +30,6 @@ rownames(postcodes.all) <- dseq
 
 #currentmax.df <- readRDS("data/currentmax.RDS")
 
-currentmax.df <- postcodes.all[(nrow(postcodes.all)-1),]
 
 #postcodes.all <- data.frame(dseq, readRDS("poa20152021max.RDS"))
 
@@ -38,16 +37,3 @@ currentmax.df <- postcodes.all[(nrow(postcodes.all)-1),]
 capital.codes <- c(35, 466, 671, 1365, 1798, 2139, 2523, 1)
 capital.names <- c("Sydney", "Canberra", "Melbourne", "Brisbane", "Adelaide", "Perth", "Hobart", "Darwin")
 
-capital.status.df <- postcodes.all[,((capital.codes))]
-
-capital.chdu <- currentmax.df[,((capital.codes))]
-capital.chdu <- round(capital.chdu, digits = 2)
-preventatives <- c(0)
-for (i in 1:8){
-  capital.chdu[2,i] <- if_else(capital.chdu[1,i] >= 130, 'On', 'Off')
-  preventatives[i] <- if_else(capital.chdu[2,i]=="On", "Preventatives may be required", "Preventatives not necessary")
-
-}
-capital.chdu <- rbind(capital.names, capital.chdu, preventatives)
-capital.df <- as.data.frame(t(capital.chdu))
-colnames(capital.df) <- c("Capital city", (paste(max(dseq), "'s", " cHDUs", sep="")), (paste(max(dseq), "'s", " status", sep="")), "Are preventatives necessary?")
